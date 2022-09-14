@@ -1,0 +1,14 @@
+[package]
+name = "narrate"
+version = "0.1.0"
+authors = ["Christopher Morton <sonro@gmx.com>"]
+edition = "2021"
+repository = "https://github.com/sonro/narrate"
+license = "MIT/Apache-2.0"
+readme = "README.md"
+
+[dependencies]
+anyhow = "1.0.63"
+atty = "0.2.14"
+colored = "2.0.0"
+exitcode = "1.1.2"
