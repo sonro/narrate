@@ -3,6 +3,7 @@ name = "narrate"
 version = "0.1.0"
 authors = ["Christopher Morton <sonro@gmx.com>"]
 edition = "2021"
+description = "narrate is a set of CLI app utilities for error handling and status reporting"
 repository = "https://github.com/sonro/narrate"
 license = "MIT/Apache-2.0"
 readme = "README.md"
