@@ -5,6 +5,7 @@ coloured output formatting aims to be similar to [Cargo]. Error type is a
 wrapper around [Anyhow].
 
 [![Crates.io](https://img.shields.io/crates/v/narrate.svg)](https://crates.io/crates/narrate)
+[![tests](https://github.com/sonro/narrate/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/sonro/narrate/actions/workflows/tests.yml)
 [![license](https://img.shields.io/crates/l/narrate.svg)](#license)
 
 ## Features
