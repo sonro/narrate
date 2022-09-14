@@ -4,6 +4,7 @@ This library provides CLI application error and status reporting utilities. The
 coloured output formatting aims to be similar to [Cargo]. Error type is a
 wrapper around [Anyhow].
 
+[![Crates.io](https://img.shields.io/crates/v/narrate.svg)](https://crates.io/crates/narrate)
 [![license](https://img.shields.io/crates/l/narrate.svg)](#license)
 
 ## Features
