@@ -22,3 +22,9 @@ impl ExitCode for anyhow::Error {
         }
     }
 }
+
+impl From<Error> for anyhow::Error {
+    fn from(err: Error) -> Self {
+        err.inner
+    }
+}
