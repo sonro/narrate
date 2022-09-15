@@ -8,18 +8,17 @@ wrapper around [Anyhow].
 [![tests](https://github.com/sonro/narrate/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/sonro/narrate/actions/workflows/tests.yml)
 [![license](https://img.shields.io/crates/l/narrate.svg)](#license)
 
+[API Docs](https://docs.rs/narrate/latest/narrate)
+
 ## Features
 
+- User facing status messages and error reporting
 - Wrap any error with additional context
 - Optional help messages for errors
 - Set of standard CLI errors with exit codes conforming to
   [sysexits.h]
 - Convenience `Result` type
-
-### Planned features
-
-- Error chain output
-- Status messages
+- Drop in replacement for [Anyhow]
 
 ## How to use
 
@@ -60,7 +59,7 @@ wrapper around [Anyhow].
       config.load().wrap(|| CliError::Config)?;
 
       // wrap with help information
-      create_dir().wrap_help(|| "project directory already exists", "try using cargo init")?;
+      create_dir().wrap_help(|| "project directory already exists", "Try using cargo init")?;
       ...
   }
   ```
@@ -69,7 +68,7 @@ wrapper around [Anyhow].
   error: project directory already exists
   cause: Is a directory (os error 20)
 
-  help: try using cargo init
+  Try using cargo init
   ```
 
 - Use the
@@ -98,6 +97,53 @@ wrapper around [Anyhow].
       Ok(())
   }
   ```
+
+- Report errors to the command line with either
+  [`report::err`](https://docs.rs/narrate/latest/narrate/report/fn.err.html)
+  or
+  [`report::err_full`](https://docs.rs/narrate/latest/narrate/report/fn.err_full.html)
+  for the complete error chain.
+
+  ```rust
+  use narrate::{CliError, Error, report};
+
+  fn main() {
+      let res = run();
+
+      if let Err(ref err) = res {
+          report::err_full(&err);
+          std::process::exit(err.exit_code());
+      }
+  }
+
+  fn run() -> Result<()> {
+      ...
+      let config: Config = serde_json::from_str(&json)
+          .wrap(|| "bad config file `/app/config.toml`")
+          .wrap_help(
+              || CliError::Config,
+              "see https://docs.example.rs/config for more help",
+          )?;
+      ...
+  }
+  ```
+
+  ![report::err_full output](/docs/report_err_full.png?raw=true)
+
+- Report application status to the command line with
+  [`report::status`](https://docs.rs/narrate/latest/narrate/report/status.err.html).
+  Modeled on the output from [Cargo].
+
+  ```rust
+  use colored::Color;
+  use narrate::report;
+
+  fn main() {
+      report::status("Created", "new project `spacetime`", Color::Green);
+  }
+  ```
+
+  ![report::status output](/docs/report_status.png?raw=true)
 
 ## License
 
