@@ -7,16 +7,14 @@ use crate::util::{always_errors, assert_function_error, ExpectedErr};
 #[test]
 fn error_stub() {
     assert_function_error(&ExpectedErr::new("context"), || {
-        always_errors().wrap(|| "context")?;
-        Ok(())
+        always_errors().wrap(|| "context")
     });
 }
 
 #[test]
 fn cli_error_protocol() {
     assert_function_error(&ExpectedErr::new(CliError::Protocol), || {
-        always_errors().wrap(|| CliError::Protocol)?;
-        Ok(())
+        always_errors().wrap(|| CliError::Protocol)
     });
 }
 

@@ -8,18 +8,10 @@ pub mod wrap;
 pub use cli::CliError;
 pub use wrap::ErrorWrap;
 
+#[derive(Debug)]
 pub struct Error {
     pub(crate) inner: anyhow::Error,
     pub(crate) help: Option<HelpMsg>,
-}
-
-impl fmt::Debug for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Error")
-            .field("inner", &self.inner.to_string())
-            .field("help", &self.help)
-            .finish()
-    }
 }
 
 impl Error {
@@ -33,13 +25,21 @@ impl Error {
         }
     }
 
+    #[inline]
+    pub fn from_anyhow(error: anyhow::Error) -> Self {
+        Self {
+            inner: error,
+            help: None,
+        }
+    }
+
     pub fn wrap<C>(self, context: C) -> Self
     where
         C: fmt::Display + Send + Sync + 'static,
     {
         Self {
             inner: self.inner.context(context),
-            help: None,
+            help: self.help,
         }
     }
 
@@ -90,7 +90,7 @@ impl Error {
     }
 
     #[inline]
-    pub fn set_help_static(&mut self, msg: &'static str) {
+    pub fn set_help(&mut self, msg: &'static str) {
         self.help = Some(HelpMsg::Static(msg));
     }
 }
