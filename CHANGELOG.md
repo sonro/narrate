@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2022-09-15
+
 ### Added
 
 - Console status and error messaging with `report::status` and `report::err`.
@@ -24,5 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ExitCode` trait for [sysexits.h](https://man.openbsd.org/sysexits.3) program
   exit codes.
 
-[Unreleased]: https://github.com/sonro/narrate/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/sonro/narrate/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/sonro/narrate/releases/tag/v0.1.1
 [0.1.0]: https://github.com/sonro/narrate/releases/tag/v0.1.0
