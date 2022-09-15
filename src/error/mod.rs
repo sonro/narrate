@@ -23,14 +23,73 @@ impl fmt::Debug for Error {
 }
 
 impl Error {
+    pub fn new<E>(error: E) -> Self
+    where
+        E: StdError + Send + Sync + 'static,
+    {
+        Self {
+            inner: error.into(),
+            help: None,
+        }
+    }
+
+    pub fn wrap<C>(self, context: C) -> Self
+    where
+        C: fmt::Display + Send + Sync + 'static,
+    {
+        Self {
+            inner: self.inner.context(context),
+            help: None,
+        }
+    }
+
+    pub fn is<E>(&self) -> bool
+    where
+        E: fmt::Display + fmt::Debug + Send + Sync + 'static,
+    {
+        self.downcast_ref::<E>().is_some()
+    }
+
+    pub fn downcast<E>(self) -> Result<E, anyhow::Error>
+    where
+        E: fmt::Display + fmt::Debug + Send + Sync + 'static,
+    {
+        self.inner.downcast()
+    }
+
+    pub fn downcast_ref<E>(&self) -> Option<&E>
+    where
+        E: fmt::Display + fmt::Debug + Send + Sync + 'static,
+    {
+        self.inner.downcast_ref()
+    }
+
+    pub fn downcast_mut<E>(&mut self) -> Option<&mut E>
+    where
+        E: fmt::Display + fmt::Debug + Send + Sync + 'static,
+    {
+        self.inner.downcast_mut()
+    }
+
+    pub fn chain(&self) -> anyhow::Chain {
+        self.inner.chain()
+    }
+
+    pub fn route_cause(&self) -> &(dyn StdError + 'static) {
+        self.inner.root_cause()
+    }
+
+    #[inline]
     pub fn help(&self) -> Option<&str> {
         self.help.as_ref().map(AsRef::as_ref)
     }
 
+    #[inline]
     pub fn set_help_owned(&mut self, msg: String) {
         self.help = Some(HelpMsg::Owned(msg));
     }
 
+    #[inline]
     pub fn set_help_static(&mut self, msg: &'static str) {
         self.help = Some(HelpMsg::Static(msg));
     }
@@ -48,7 +107,7 @@ where
 {
     fn from(err: E) -> Self {
         Self {
-            inner: anyhow::Error::from(err),
+            inner: err.into(),
             help: None,
         }
     }
@@ -64,7 +123,7 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.help {
             None => self.inner.fmt(f),
-            Some(ref help) => format_error_with_help(&self.inner, help, f),
+            Some(ref help) => write!(f, "{}\n\n{}", self.inner, help),
         }
     }
 }
@@ -78,20 +137,20 @@ impl AsRef<str> for HelpMsg {
     }
 }
 
-#[inline]
-fn format_error_with_help(
-    err: &anyhow::Error,
-    help: &HelpMsg,
-    f: &mut fmt::Formatter<'_>,
-) -> fmt::Result {
-    write!(f, "{}\n\n{}", err, help)
-}
-
 impl fmt::Display for HelpMsg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             HelpMsg::Owned(help) => help.fmt(f),
             HelpMsg::Static(help) => help.fmt(f),
+        }
+    }
+}
+
+impl<'a> PartialEq<&'a str> for HelpMsg {
+    fn eq(&self, r: &&'a str) -> bool {
+        match self {
+            Self::Owned(l) => l == r,
+            Self::Static(l) => l == r,
         }
     }
 }
