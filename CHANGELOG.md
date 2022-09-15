@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Console status and error messaging with `report::status` and `report::err`.
+- `Error` methods delegating to inner `anyhow::Error`.
+- Convertion from `Error` to `anyhow::Error`.
+- More robust test-suite.
+
 ## [0.1.0] - 2022-09-14
 
 ### Added
