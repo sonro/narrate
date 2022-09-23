@@ -1,7 +1,8 @@
 use std::{error::Error as StdError, fmt};
 
-use crate::{Error, ExitCode};
+use crate::{Chain, Error, ExitCode};
 
+mod chain;
 pub mod cli;
 pub mod wrap;
 
@@ -65,8 +66,8 @@ impl Error {
         self.inner.downcast_mut()
     }
 
-    pub fn chain(&self) -> anyhow::Chain {
-        self.inner.chain()
+    pub fn chain(&self) -> Chain {
+        self.inner.chain().into()
     }
 
     pub fn route_cause(&self) -> &(dyn StdError + 'static) {

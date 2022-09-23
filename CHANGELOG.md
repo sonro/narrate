@@ -9,8 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `error_from` macro copied from `anyhow::anyhow`
-- `bail` macro copied from `anyhow::bail`
+- `error_from` macro copied from `anyhow::anyhow`.
+- `bail` macro copied from `anyhow::bail`.
+- `Chain` type for iterating through wrapped errors.
+
+### Fixed
+
+- `anyhow::Chain` type no used as return type of `Error::chain` method.
 
 ## [0.1.2] - 2022-09-15
 

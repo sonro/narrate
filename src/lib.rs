@@ -14,6 +14,12 @@ pub struct Error {
     pub(crate) help: Option<HelpMsg>,
 }
 
+#[derive(Clone, Default)]
+#[repr(transparent)]
+pub struct Chain<'a> {
+    inner: anyhow::Chain<'a>,
+}
+
 pub trait ExitCode {
     fn exit_code(&self) -> i32 {
         exitcode::SOFTWARE
