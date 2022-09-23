@@ -1,4 +1,5 @@
 mod error;
+mod macros;
 pub mod report;
 
 pub use error::{CliError, Error, ErrorWrap};
