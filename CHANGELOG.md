@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `error_from` macro copied from `anyhow::anyhow`.
 - `bail` macro copied from `anyhow::bail`.
 - `Chain` type for iterating through wrapped errors.
+- Re-export colored crate as narrate publically depends on their
+  features.
+- Re-exprot `Color` from colored for use in `report::status`.
 
 ### Fixed
 

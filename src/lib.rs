@@ -8,6 +8,10 @@ use std::{fmt::Display, path::PathBuf};
 
 use error::HelpMsg;
 
+pub use colored;
+
+pub use colored::Color;
+
 #[derive(Debug)]
 pub struct Error {
     pub(crate) inner: anyhow::Error,
