@@ -1,30 +1,6 @@
-use std::fmt::{self, Display};
+use std::fmt::Display;
 
-use super::Error;
-
-pub trait ErrorWrap<T, E>
-where
-    E: Send + Sync + 'static,
-{
-    /// Wrap an error value with additional context that is evaluated lazily
-    /// only once an error does occur.
-    fn wrap<C, F>(self, f: F) -> Result<T, Error>
-    where
-        C: fmt::Display + Send + Sync + 'static,
-        F: FnOnce() -> C;
-
-    /// Lazily evaluated error wrapper, with an additional static help message
-    fn wrap_help<C, F>(self, f: F, help: &'static str) -> Result<T, Error>
-    where
-        C: fmt::Display + Send + Sync + 'static,
-        F: FnOnce() -> C;
-
-    /// Lazily evaluated error wrapper, with an addition owned help message
-    fn wrap_help_owned<C, F>(self, f: F, help: String) -> Result<T, Error>
-    where
-        C: fmt::Display + Send + Sync + 'static,
-        F: FnOnce() -> C;
-}
+use crate::{Error, ErrorWrap};
 
 impl<T, E> ErrorWrap<T, E> for Result<T, E>
 where
@@ -32,7 +8,7 @@ where
 {
     fn wrap<C, F>(self, f: F) -> Result<T, Error>
     where
-        C: fmt::Display + Send + Sync + 'static,
+        C: Display + Send + Sync + 'static,
         F: FnOnce() -> C,
     {
         self.map_err(|err| err.ext_context(f()))
@@ -40,7 +16,7 @@ where
 
     fn wrap_help<C, F>(self, f: F, help: &'static str) -> Result<T, Error>
     where
-        C: fmt::Display + Send + Sync + 'static,
+        C: Display + Send + Sync + 'static,
         F: FnOnce() -> C,
     {
         self.map_err(|err| err.ext_context_help(f(), help))
@@ -48,7 +24,7 @@ where
 
     fn wrap_help_owned<C, F>(self, f: F, help: String) -> Result<T, Error>
     where
-        C: fmt::Display + Send + Sync + 'static,
+        C: Display + Send + Sync + 'static,
         F: FnOnce() -> C,
     {
         self.map_err(|err| err.ext_context_help_owned(f(), help))

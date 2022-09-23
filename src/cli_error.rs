@@ -1,39 +1,6 @@
-use std::{fmt, path::PathBuf};
+use std::fmt;
 
-use crate::ExitCode;
-
-#[derive(Debug)]
-pub enum CliError {
-    Config,
-
-    CreateFile(PathBuf),
-
-    InputData,
-
-    InputFileNotFound(PathBuf),
-
-    NoUser(String),
-
-    NoHost(String),
-
-    OperationPermission(String),
-
-    OsErr,
-
-    OsFileNotFound(PathBuf),
-
-    ReadFile(PathBuf),
-
-    ResourceNotFound(String),
-
-    Protocol,
-
-    Temporary,
-
-    Usage,
-
-    WriteFile(PathBuf),
-}
+use crate::{CliError, ExitCode};
 
 impl std::error::Error for CliError {}
 

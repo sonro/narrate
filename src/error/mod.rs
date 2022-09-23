@@ -1,13 +1,9 @@
 use std::{error::Error as StdError, fmt};
 
-use crate::{Chain, Error, ExitCode};
+use crate::{Chain, CliError, Error, ExitCode};
 
 mod chain;
-pub mod cli;
-pub mod wrap;
-
-pub use cli::CliError;
-pub use wrap::ErrorWrap;
+mod wrap;
 
 impl Error {
     pub fn new<E>(error: E) -> Self
@@ -147,5 +143,23 @@ impl<'a> PartialEq<&'a str> for HelpMsg {
             Self::Owned(l) => l == r,
             Self::Static(l) => l == r,
         }
+    }
+}
+
+impl ExitCode for anyhow::Error {
+    fn exit_code(&self) -> i32 {
+        if let Some(err) = self.downcast_ref::<CliError>() {
+            err.exit_code()
+        } else if let Some(err) = self.downcast_ref::<Error>() {
+            err.exit_code()
+        } else {
+            exitcode::SOFTWARE
+        }
+    }
+}
+
+impl From<Error> for anyhow::Error {
+    fn from(err: Error) -> Self {
+        err.inner
     }
 }

@@ -1,12 +1,12 @@
+mod cli_error;
 mod error;
 mod macros;
+
 pub mod report;
 
+use std::{fmt::Display, path::PathBuf};
+
 use error::HelpMsg;
-
-pub use error::{CliError, ErrorWrap};
-
-pub type Result<T, E = Error> = core::result::Result<T, E>;
 
 #[derive(Debug)]
 pub struct Error {
@@ -20,26 +20,67 @@ pub struct Chain<'a> {
     inner: anyhow::Chain<'a>,
 }
 
+pub type Result<T, E = Error> = core::result::Result<T, E>;
+
+pub trait ErrorWrap<T, E>
+where
+    E: Send + Sync + 'static,
+{
+    /// Wrap an error value with additional context that is evaluated lazily
+    /// only once an error does occur.
+    fn wrap<C, F>(self, f: F) -> Result<T, Error>
+    where
+        C: Display + Send + Sync + 'static,
+        F: FnOnce() -> C;
+
+    /// Lazily evaluated error wrapper, with an additional static help message
+    fn wrap_help<C, F>(self, f: F, help: &'static str) -> Result<T, Error>
+    where
+        C: Display + Send + Sync + 'static,
+        F: FnOnce() -> C;
+
+    /// Lazily evaluated error wrapper, with an addition owned help message
+    fn wrap_help_owned<C, F>(self, f: F, help: String) -> Result<T, Error>
+    where
+        C: Display + Send + Sync + 'static,
+        F: FnOnce() -> C;
+}
+
 pub trait ExitCode {
     fn exit_code(&self) -> i32 {
         exitcode::SOFTWARE
     }
 }
 
-impl ExitCode for anyhow::Error {
-    fn exit_code(&self) -> i32 {
-        if let Some(err) = self.downcast_ref::<error::CliError>() {
-            err.exit_code()
-        } else if let Some(err) = self.downcast_ref::<Error>() {
-            err.exit_code()
-        } else {
-            exitcode::SOFTWARE
-        }
-    }
-}
+#[derive(Debug)]
+pub enum CliError {
+    Config,
 
-impl From<Error> for anyhow::Error {
-    fn from(err: Error) -> Self {
-        err.inner
-    }
+    CreateFile(PathBuf),
+
+    InputData,
+
+    InputFileNotFound(PathBuf),
+
+    NoUser(String),
+
+    NoHost(String),
+
+    OperationPermission(String),
+
+    OsErr,
+
+    OsFileNotFound(PathBuf),
+
+    ReadFile(PathBuf),
+
+    ResourceNotFound(String),
+
+    Protocol,
+
+    Temporary,
+
+    Usage,
+
+    WriteFile(PathBuf),
 }
