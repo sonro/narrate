@@ -1,18 +1,12 @@
 use std::{error::Error as StdError, fmt};
 
-use crate::ExitCode;
+use crate::{Error, ExitCode};
 
 pub mod cli;
 pub mod wrap;
 
 pub use cli::CliError;
 pub use wrap::ErrorWrap;
-
-#[derive(Debug)]
-pub struct Error {
-    pub(crate) inner: anyhow::Error,
-    pub(crate) help: Option<HelpMsg>,
-}
 
 impl Error {
     pub fn new<E>(error: E) -> Self

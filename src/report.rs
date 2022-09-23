@@ -2,7 +2,7 @@ use std::io::{self, stderr, Write};
 
 use colored::{Color, Colorize};
 
-use crate::error::Error;
+use crate::Error;
 
 const STDERR: &str = "writing to stderr";
 
