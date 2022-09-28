@@ -185,33 +185,48 @@ pub trait ExitCode {
 /// Standard command line application error
 #[derive(Debug)]
 pub enum CliError {
+    /// Invalid configuration
     Config,
 
+    /// Cannot create file
     CreateFile(PathBuf),
 
+    /// Invalid input data
     InputData,
 
+    /// Supplied file not found
     InputFileNotFound(PathBuf),
 
+    /// User not found
     NoUser(String),
 
+    /// Host not found
     NoHost(String),
 
+    /// No permission to perform operation
     OperationPermission(String),
 
+    /// Operating system error
     OsErr,
 
+    /// System file not found
     OsFileNotFound(PathBuf),
 
+    /// Cannot read file
     ReadFile(PathBuf),
 
+    /// Resource not found
     ResourceNotFound(String),
 
+    /// Protocol not possible
     Protocol,
 
+    /// Temporary/non fatal error
     Temporary,
 
+    /// Inccorect usage
     Usage,
 
+    /// Cannot write to file
     WriteFile(PathBuf),
 }
