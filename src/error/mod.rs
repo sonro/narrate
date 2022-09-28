@@ -35,7 +35,7 @@ impl Error {
     /// Wrap the error value with additional context.
     ///
     /// For attaching context to a `Result` as it is propagated, the
-    /// [`ErrorWrap`] extension trait may be more convenient than this function.
+    /// [`ErrorWrap`](crate::ErrorWrap) extension trait may be more convenient than this function.
     ///
     /// The primary reason to use `error.warp(...)` instead of
     /// `result.warp(...)` via the `ErrorWrap` trait would be if the context
