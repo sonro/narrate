@@ -1,12 +1,12 @@
+use std::{fmt::Display, path::PathBuf};
+
+use error::HelpMsg;
+
 mod cli_error;
 mod error;
 mod macros;
 
 pub mod report;
-
-use std::{fmt::Display, path::PathBuf};
-
-use error::HelpMsg;
 
 pub use colored;
 
