@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `anyhow::Chain` type no used as return type of `Error::chain` method.
+- `anyhow::Chain` type not used as return type of `Error::chain` method.
 
 ## [0.1.2] - 2022-09-15
 
