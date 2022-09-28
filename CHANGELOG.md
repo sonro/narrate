@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `anyhow::Chain` type not used as return type of `Error::chain` method.
 
+### Documentation
+
+- Add rustdoc for all public types types.
+
 ## [0.1.2] - 2022-09-15
 
 ### Fixed
