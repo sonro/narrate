@@ -6,6 +6,15 @@ use crate::Error;
 
 const STDERR: &str = "writing to stderr";
 
+/// Report a status to stderr.
+///
+/// ```txt
+///     <title>: <msg>
+/// ```
+///
+/// The title will be justified in the style of Cargo's statuses. If stderr
+/// is directed to a TTY (as is normal for a CLI app), it will have it's color
+/// set.
 pub fn status<T, M>(title: T, msg: M, color: Color)
 where
     T: AsRef<str>,
@@ -19,6 +28,43 @@ where
     format_status(title, msg, color, &mut f).expect(STDERR);
 }
 
+/// Report an error to stderr
+///
+/// The message will consist of a red `error:` title, followed by the
+/// [`Display`](std::fmt::Display) impl for the underlying error.
+///
+/// If the [`Error`] contains a help message, that will be printed 2 lines
+/// below.
+///
+/// # Examples
+///
+/// Standard error.
+///
+/// ```
+/// # use narrate::error_from;
+/// # use narrate::report;
+/// let error = error_from!("invalid configuration");
+/// # /*
+/// report::err(&error);
+/// # */
+/// // error: invalid configuration
+/// ```
+///
+/// Error with a help message.
+///
+/// ```
+/// # use narrate::CliError;
+/// # use narrate::Error;
+/// # use narrate::report;
+/// let mut error = Error::new(CliError::Config);
+/// error.set_help("try something else");
+/// # /*
+/// report::err(&error);
+/// # */
+/// // error: invalid configuration
+/// //
+/// // try something else
+/// ```
 pub fn err(err: &Error) {
     let color = atty::is(atty::Stream::Stderr);
     let mut f = stderr().lock();
@@ -26,6 +72,81 @@ pub fn err(err: &Error) {
     format_error_help(err, &mut f).expect(STDERR);
 }
 
+/// Report an error to stderr, printing a list of wrapped causes
+///
+/// The message will consist of a red `error:` title, followed by the
+/// [`Display`](std::fmt::Display) impl for the underlying error.
+/// Each subsequent wrapped error will have a plain `cause:` title.
+///
+/// # Examples
+///
+/// Wrapped error.
+///
+/// ```
+/// # fn parse_config_file(path: &str) -> narrate::Result<()> {
+/// #   Ok(())
+/// # }
+/// use narrate::{report, ErrorWrap, Result};
+///
+/// fn setup_config() -> Result<()> {
+/// # /*
+///     ...
+/// # */
+/// # let path = "";
+///     let user_config = parse_config_file(&path)
+///         .wrap(|| format!("invalid config file: `{}`", &path))?;
+/// # /*
+///     ...
+/// # */
+/// # Ok(())
+/// }
+///
+/// fn main() {
+/// # /*
+///     ...
+/// # */
+///     let res = setup_config().wrap(|| "invalid configuration");
+///     if let Err(ref err) = res {
+/// # /*
+///         report::err_full(err);
+/// # */
+///         // error: invalid configuration
+///         // cause: invalid config file: `config.toml`
+///         // cause: missing key: `author`
+///     }
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// Wrapped error with a help message.
+///
+/// ```
+/// use std::{fs::File, path::PathBuf};
+///
+/// use narrate::{report, CliError, ErrorWrap, Result};
+///
+/// fn run() -> Result<()> {
+///     let path = PathBuf::from("/nopermission/file.txt");
+///     File::create(&path)
+///         .wrap_help(|| CliError::CreateFile(path), "try using a valid file name")?;
+///     Ok(())
+/// }
+///
+///
+/// fn main() {
+///     if let Err(err) = run() {
+/// # /*
+///         report::err_full(&err);
+/// # */
+///         // error: cannot create file: "/nopermission.txt"
+///         // cause: permission denied
+///         //
+///         // try using a valid file name
+///     }
+/// }
+/// ```
 pub fn err_full(err: &Error) {
     let color = atty::is(atty::Stream::Stderr);
     let mut f = stderr().lock();
