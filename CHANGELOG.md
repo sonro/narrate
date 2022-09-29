@@ -13,7 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- [**BREAKING**] Seal `ErrorWrap` so it cannot be implemented for user's types.
+#### [**BREAKING**] `ErrorWrap`
+
+- Seal trait so it cannot be implemented for user's types.
+- Lazily evaluated method renamed `wrap_with`.
+- Method `wrap` is no longer lazily evaluated.
+- Adding help is now done through the method `add_help` and lazy version
+  `add_help_with`.
+
+#### Other
+
 - [**BREAKING**] Change public API typo for `Error` method `route_cause` to
   `root_cause`.
 

@@ -94,7 +94,7 @@ pub fn err(err: &Error) {
 /// # */
 /// # let path = "";
 ///     let user_config = parse_config_file(&path)
-///         .wrap(|| format!("invalid config file: `{}`", &path))?;
+///         .wrap_with(|| format!("invalid config file: `{}`", &path))?;
 /// # /*
 ///     ...
 /// # */
@@ -105,7 +105,7 @@ pub fn err(err: &Error) {
 /// # /*
 ///     ...
 /// # */
-///     let res = setup_config().wrap(|| "invalid configuration");
+///     let res = setup_config().wrap_with(|| "invalid configuration");
 ///     if let Err(ref err) = res {
 /// # /*
 ///         report::err_full(err);
@@ -130,7 +130,8 @@ pub fn err(err: &Error) {
 /// fn run() -> Result<()> {
 ///     let path = PathBuf::from("/nopermission/file.txt");
 ///     File::create(&path)
-///         .wrap_help(|| CliError::CreateFile(path), "try using a valid file name")?;
+///         .wrap_with(|| CliError::CreateFile(path))
+///         .add_help("try using a valid file name")?;
 ///     Ok(())
 /// }
 ///

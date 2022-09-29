@@ -6,7 +6,14 @@ impl<T, E> ErrorWrap<T, E> for Result<T, E>
 where
     E: ext::StdError + Send + Sync + 'static,
 {
-    fn wrap<C, F>(self, f: F) -> Result<T, Error>
+    fn wrap<C>(self, context: C) -> crate::Result<T, Error>
+    where
+        C: Display + Send + Sync + 'static,
+    {
+        self.map_err(|err| err.ext_context(context))
+    }
+
+    fn wrap_with<C, F>(self, f: F) -> Result<T, Error>
     where
         C: Display + Send + Sync + 'static,
         F: FnOnce() -> C,
@@ -14,20 +21,16 @@ where
         self.map_err(|err| err.ext_context(f()))
     }
 
-    fn wrap_help<C, F>(self, f: F, help: &'static str) -> Result<T, Error>
-    where
-        C: Display + Send + Sync + 'static,
-        F: FnOnce() -> C,
-    {
-        self.map_err(|err| err.ext_context_help(f(), help))
+    fn add_help(self, help: &'static str) -> Result<T, Error> {
+        self.map_err(|err| err.ext_add_help(help))
     }
 
-    fn wrap_help_owned<C, F>(self, f: F, help: String) -> Result<T, Error>
+    fn add_help_with<C, F>(self, f: F) -> Result<T, Error>
     where
         C: Display + Send + Sync + 'static,
         F: FnOnce() -> C,
     {
-        self.map_err(|err| err.ext_context_help_owned(f(), help))
+        self.map_err(|err| err.ext_add_help_with(f()))
     }
 }
 
@@ -41,11 +44,9 @@ mod ext {
         where
             C: Display + Send + Sync + 'static;
 
-        fn ext_context_help<C>(self, context: C, help: &'static str) -> Error
-        where
-            C: Display + Send + Sync + 'static;
+        fn ext_add_help(self, help: &'static str) -> Error;
 
-        fn ext_context_help_owned<C>(self, context: C, help: String) -> Error
+        fn ext_add_help_with<C>(self, help: C) -> Error
         where
             C: Display + Send + Sync + 'static;
     }
@@ -61,21 +62,18 @@ mod ext {
             Error::from(self).wrap(context)
         }
 
-        fn ext_context_help<C>(self, context: C, help: &'static str) -> Error
-        where
-            C: Display + Send + Sync + 'static,
-        {
-            let mut err = Error::from(self).wrap(context);
+        fn ext_add_help(self, help: &'static str) -> Error {
+            let mut err = Error::from(self);
             err.set_help(help);
             err
         }
 
-        fn ext_context_help_owned<C>(self, context: C, help: String) -> Error
+        fn ext_add_help_with<C>(self, help: C) -> Error
         where
             C: Display + Send + Sync + 'static,
         {
-            let mut err = Error::from(self).wrap(context);
-            err.set_help_owned(help);
+            let mut err = Error::from(self);
+            err.set_help_owned(help.to_string());
             err
         }
     }
@@ -88,33 +86,28 @@ mod ext {
             self.wrap(context)
         }
 
-        fn ext_context_help<C>(self, context: C, help: &'static str) -> Error
-        where
-            C: Display + Send + Sync + 'static,
-        {
-            let mut err = self.wrap(context);
-            match err.help {
+        fn ext_add_help(mut self, help: &'static str) -> Error {
+            match self.help {
                 Some(HelpMsg::Owned(ref mut msg)) => {
                     msg.push('\n');
                     msg.push_str(help);
                 }
-                Some(HelpMsg::Static(msg)) => err.set_help_owned(format!("{}\n{}", msg, help)),
+                Some(HelpMsg::Static(msg)) => self.set_help_owned(format!("{}\n{}", msg, help)),
 
-                None => err.set_help(help),
+                None => self.set_help(help),
             }
-            err
+            self
         }
 
-        fn ext_context_help_owned<C>(self, context: C, help: String) -> Error
+        fn ext_add_help_with<C>(mut self, help: C) -> Error
         where
             C: Display + Send + Sync + 'static,
         {
-            let mut err = self.wrap(context);
-            match err.help() {
-                Some(msg) => err.set_help_owned(format!("{}\n{}", msg, help)),
-                None => err.set_help_owned(help),
+            match self.help() {
+                Some(msg) => self.set_help_owned(format!("{}\n{}", msg, help)),
+                None => self.set_help_owned(help.to_string()),
             }
-            err
+            self
         }
     }
 }

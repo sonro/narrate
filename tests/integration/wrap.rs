@@ -7,14 +7,14 @@ use crate::util::{always_errors, assert_function_error, ExpectedErr};
 #[test]
 fn error_stub() {
     assert_function_error(&ExpectedErr::new("context"), || {
-        always_errors().wrap(|| "context")
+        always_errors().wrap("context")
     });
 }
 
 #[test]
 fn cli_error_protocol() {
     assert_function_error(&ExpectedErr::new(CliError::Protocol), || {
-        always_errors().wrap(|| CliError::Protocol)
+        always_errors().wrap(CliError::Protocol)
     });
 }
 
@@ -27,7 +27,9 @@ fn cli_error_create_file_with_help() {
     let expected = ExpectedErr::new_with_help(CliError::CreateFile(path.clone()), help_msg);
 
     let function = || {
-        fs::File::create(&path).wrap_help(|| CliError::CreateFile(path.clone()), help_msg)?;
+        fs::File::create(&path)
+            .wrap_with(|| CliError::CreateFile(path.clone()))
+            .add_help(help_msg)?;
         Ok(())
     };
 

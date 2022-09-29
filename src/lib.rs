@@ -136,11 +136,11 @@ pub type Result<T, E = Error> = core::result::Result<T, E>;
 /// }
 ///
 /// pub fn do_it(mut it: ImportantThing) -> Result<Vec<u8>> {
-///     it.detach().wrap(|| "Failed to detach the important thing")?;
+///     it.detach().wrap("Failed to detach the important thing")?;
 ///
 ///     let path = &it.path;
 ///     let content = fs::read(path)
-///         .wrap(|| format!("Failed to read instrs from {}", path.display()))?;
+///         .wrap_with(|| format!("Failed to read instrs from {}", path.display()))?;
 ///
 ///     Ok(content)
 /// }
@@ -149,21 +149,22 @@ pub trait ErrorWrap<T, E>: error::wrap::private::Sealed
 where
     E: Send + Sync + 'static,
 {
+    /// Wrap an error value with additional context
+    fn wrap<C>(self, context: C) -> Result<T, Error>
+    where
+        C: Display + Send + Sync + 'static;
+
     /// Wrap an error value with additional context that is evaluated lazily
     /// only once an error does occur.
-    fn wrap<C, F>(self, f: F) -> Result<T, Error>
+    fn wrap_with<C, F>(self, f: F) -> Result<T, Error>
     where
         C: Display + Send + Sync + 'static,
         F: FnOnce() -> C;
 
     /// Lazily evaluated error wrapper, with an additional static help message
-    fn wrap_help<C, F>(self, f: F, help: &'static str) -> Result<T, Error>
-    where
-        C: Display + Send + Sync + 'static,
-        F: FnOnce() -> C;
+    fn add_help(self, help: &'static str) -> Result<T, Error>;
 
-    /// Lazily evaluated error wrapper, with an addition owned help message
-    fn wrap_help_owned<C, F>(self, f: F, help: String) -> Result<T, Error>
+    fn add_help_with<C, F>(self, f: F) -> Result<T, Error>
     where
         C: Display + Send + Sync + 'static,
         F: FnOnce() -> C;

@@ -1,10 +1,9 @@
 use narrate::{report, CliError, Error, ErrorWrap, ExitCode, Result};
 
 fn main() {
-    let res = config_error().wrap_help(
-        || CliError::Config,
-        "See https://docs.example.rs/config for more info",
-    );
+    let res = config_error()
+        .wrap(CliError::Config)
+        .add_help("See https://docs.example.rs/config for more info");
 
     if let Err(ref err) = res {
         report::err_full(err);
@@ -19,9 +18,9 @@ fn main() {
 /// ```
 fn config_error() -> Result<(), Error> {
     // simulate deserialization error
-    let error = anyhow::anyhow!("missing key: 'port'");
+    let error = narrate::error_from!("missing key: 'port'");
     // wrap with config error
-    let error = Error::from_anyhow(error).wrap("bad config file `/app/config.toml`");
+    let error = error.wrap("bad config file `/app/config.toml`");
 
     Err(error)
 }
