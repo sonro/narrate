@@ -20,7 +20,7 @@ fn cli_error_protocol() {
 
 #[test]
 fn cli_error_create_file_with_help() {
-    let mut path = non_existant_dir();
+    let mut path = non_existent_dir();
     path.push("file_name");
     let help_msg = "Consider a better file name";
 
@@ -34,7 +34,7 @@ fn cli_error_create_file_with_help() {
     assert_function_error(&expected, function)
 }
 
-fn non_existant_dir() -> PathBuf {
+fn non_existent_dir() -> PathBuf {
     let mut path = env::temp_dir();
     path.push("unknown_dir");
     assert!(!path.exists(), "dir should not exist: `{}`", path.display());

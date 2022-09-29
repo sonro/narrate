@@ -53,7 +53,7 @@ wrapper around [Anyhow].
   fn run() -> Result<()> {
       ...
       // wrap with contextual information
-      data.acquire().wrap(|| "unable to aquire data")?;
+      data.acquire().wrap(|| "unable to acquire data")?;
 
       // wrap with another error
       config.load().wrap(|| CliError::Config)?;

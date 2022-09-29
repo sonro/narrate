@@ -8,7 +8,7 @@ pub(crate) mod wrap;
 impl Error {
     /// Create a new error object from any error type.
     ///
-    /// The error type must be threadsafe and `'static`, so that the `Error`
+    /// The error type must be thread-safe and `'static`, so that the `Error`
     /// will be as well.
     pub fn new<E>(error: E) -> Self
     where
@@ -22,7 +22,7 @@ impl Error {
 
     /// Convert an [`anyhow::Error`] into an error object.
     ///
-    /// Due to the generic implmentation of [`From`] for [`Error`]: we cannot
+    /// Due to the generic implementation of [`From`] for [`Error`]: we cannot
     /// add a `From<anyhow::Error>` impl. Use this instead.
     #[inline]
     pub fn from_anyhow(error: anyhow::Error) -> Self {

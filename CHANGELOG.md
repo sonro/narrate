@@ -18,9 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `error_from` macro copied from `anyhow::anyhow`.
 - `bail` macro copied from `anyhow::bail`.
 - `Chain` type for iterating through wrapped errors.
-- Re-export colored crate as narrate publically depends on their
+- Re-export colored crate as narrate publicly depends on their
   features.
-- Re-exprot `Color` from colored for use in `report::status`.
+- Re-export `Color` from colored for use in `report::status`.
 
 ### Fixed
 
@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Console status and error messaging with `report::status` and `report::err`.
 - `Error` methods delegating to inner `anyhow::Error`.
-- Convertion from `Error` to `anyhow::Error`.
+- Conversion from `Error` to `anyhow::Error`.
 - More robust test-suite.
 
 ## [0.1.0] - 2022-09-14
@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Error` type to wrap around `anyhow::Error` with a help message.
 - `ErrorWrap` trait to add context to errors.
-- `Result` convience type.
+- `Result` convince type.
 - `ExitCode` trait for [sysexits.h](https://man.openbsd.org/sysexits.3) program
   exit codes.
 

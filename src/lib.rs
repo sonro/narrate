@@ -223,7 +223,7 @@ pub enum CliError {
     /// Temporary/non fatal error
     Temporary,
 
-    /// Inccorect usage
+    /// Incorrect usage
     Usage,
 
     /// Cannot write to file
