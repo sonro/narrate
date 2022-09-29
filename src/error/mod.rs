@@ -196,7 +196,7 @@ impl Error {
     ///
     /// The root cause is the last error in the iterator produced by
     /// [`chain()`][Error::chain].
-    pub fn route_cause(&self) -> &(dyn StdError + 'static) {
+    pub fn root_cause(&self) -> &(dyn StdError + 'static) {
         self.inner.root_cause()
     }
 
