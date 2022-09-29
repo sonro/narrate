@@ -53,13 +53,18 @@ wrapper around [Anyhow].
   fn run() -> Result<()> {
       ...
       // wrap with contextual information
-      data.acquire().wrap(|| "unable to acquire data")?;
+      data.acquire().wrap("unable to acquire data")?;
 
       // wrap with another error
-      config.load().wrap(|| CliError::Config)?;
+      config.load().wrap(CliError::Config)?;
+
+      // wrap with lazily evaulated string or error
+      config.load().wrap_with(|| format!("cannot load {}", path))?;
 
       // wrap with help information
-      create_dir().wrap_help(|| "project directory already exists", "Try using cargo init")?;
+      create_dir()
+        .wrap("project directory already exists")
+        .add_help("Try using cargo init")?;
       ...
   }
   ```
@@ -93,7 +98,7 @@ wrapper around [Anyhow].
   }
 
   fn run() -> Result<()> {
-      will_error().wrap(|| CliError::OsErr)?
+      will_error().wrap(CliError::OsErr)?
       Ok(())
   }
   ```
@@ -119,11 +124,9 @@ wrapper around [Anyhow].
   fn run() -> Result<()> {
       ...
       let config: Config = serde_json::from_str(&json)
-          .wrap(|| "bad config file `/app/config.toml`")
-          .wrap_help(
-              || CliError::Config,
-              "see https://docs.example.rs/config for more help",
-          )?;
+          .wrap("bad config file `/app/config.toml`")
+          .wrap(CliError::Config)
+          .add_help("see https://docs.example.rs/config for more help")?;
       ...
   }
   ```
