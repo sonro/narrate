@@ -1,6 +1,6 @@
 [package]
 name = "narrate"
-version = "0.1.3"
+version = "0.2.0"
 authors = ["Christopher Morton <sonro@gmx.com>"]
 edition = "2021"
 description = "narrate is a set of CLI app utilities for error handling and status reporting"
