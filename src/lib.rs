@@ -111,7 +111,7 @@ pub type Result<T, E = Error> = core::result::Result<T, E>;
 
 /// Provides `wrap`, `wrap_help` and `wrap_help_owned` methods for `Result`.
 ///
-/// This trait will be sealed and should not be implemented for types outside of
+/// This trait is sealed and cannot be implemented for types outside of
 /// `narrate`.
 ///
 /// # Example
@@ -144,8 +144,7 @@ pub type Result<T, E = Error> = core::result::Result<T, E>;
 ///     Ok(content)
 /// }
 /// ```
-///
-pub trait ErrorWrap<T, E>
+pub trait ErrorWrap<T, E>: error::wrap::private::Sealed
 where
     E: Send + Sync + 'static,
 {

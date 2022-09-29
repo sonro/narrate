@@ -3,7 +3,7 @@ use std::{error::Error as StdError, fmt};
 use crate::{Chain, CliError, Error, ExitCode};
 
 mod chain;
-mod wrap;
+pub(crate) mod wrap;
 
 impl Error {
     /// Create a new error object from any error type.
