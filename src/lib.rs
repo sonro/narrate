@@ -8,6 +8,7 @@ mod macros;
 
 pub mod report;
 
+pub use anyhow;
 pub use colored;
 
 pub use colored::Color;

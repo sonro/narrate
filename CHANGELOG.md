@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Re-export anyhow crate.
+
 ### Fixed
 
 - [**BREAKING**] Seal `ErrorWrap` so it cannot be implemented for user's types.
