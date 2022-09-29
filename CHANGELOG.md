@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Re-export anyhow crate.
 
-### Fixed
+### Changed
 
 #### [**BREAKING**] `ErrorWrap`
 
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Other
 
-- [**BREAKING**] Change public API typo for `Error` method `route_cause` to
+- [**BREAKING**] Fix public API typo for `Error` method `route_cause` to
   `root_cause`.
 
 ## [0.1.3] - 2022-09-28
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   features.
 - Re-export `Color` from colored for use in `report::status`.
 
-### Fixed
+### Changed
 
 - `anyhow::Chain` type not used as return type of `Error::chain` method.
 
@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.2] - 2022-09-15
 
-### Fixed
+### Changed
 
 - Multiple `Error` help messages.
 - Wrapping a `Result` with an `Error`.
