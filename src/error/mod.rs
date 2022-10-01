@@ -108,11 +108,11 @@ impl Error {
     }
 
     /// Attempt to downcast the error object to a concrete type.
-    pub fn downcast<E>(self) -> Result<E, anyhow::Error>
+    pub fn downcast<E>(self) -> Result<E, Self>
     where
         E: fmt::Display + fmt::Debug + Send + Sync + 'static,
     {
-        self.inner.downcast()
+        self.inner.downcast().map_err(Self::from_anyhow)
     }
 
     /// Downcast this error object by reference.
