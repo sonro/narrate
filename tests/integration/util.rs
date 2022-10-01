@@ -54,9 +54,6 @@ impl<E> ExpectedErr<E> {
 
 impl<E: Display> Display for ExpectedErr<E> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.help_msg {
-            Some(help) => write!(f, "{}\n\n{}", self.error, help),
-            None => write!(f, "{}", self.error),
-        }
+        self.error.fmt(f)
     }
 }

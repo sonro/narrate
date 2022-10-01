@@ -271,10 +271,7 @@ pub(crate) enum HelpMsg {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self.help {
-            None => self.inner.fmt(f),
-            Some(ref help) => write!(f, "{}\n\n{}", self.inner, help),
-        }
+        self.inner.fmt(f)
     }
 }
 

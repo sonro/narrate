@@ -15,6 +15,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Deprecate `set_help` and `set_help_owned` methods for `Error` type.
+- [**BREAKING**] `Display` implementation simplified for `Error`.
+- [**BREAKING**] `report::err` module now only prints relevant help.
 
 ## [0.2.0] - 2022-09-29
 

@@ -153,7 +153,7 @@ pub fn err_full(err: &Error) {
     let mut f = stderr().lock();
     format_error_title(err, color, &mut f).expect(STDERR);
     format_error_causes(err, color, &mut f).expect(STDERR);
-    format_error_help(err, &mut f).expect(STDERR);
+    format_error_help_all(err, &mut f).expect(STDERR);
 }
 
 #[inline]
@@ -178,8 +178,20 @@ fn format_error_causes(err: &Error, color: bool, f: &mut io::StderrLock) -> io::
 }
 
 #[inline]
+fn format_error_help_all(err: &Error, f: &mut io::StderrLock) -> io::Result<()> {
+    if let Some(help) = err.help() {
+        writeln!(f, "\n{}", help)?;
+    }
+    Ok(())
+}
+
+#[inline]
 fn format_error_help(err: &Error, f: &mut io::StderrLock) -> io::Result<()> {
-    if let Some(ref help) = err.help {
+    if let Some(help) = err.help() {
+        let help = help
+            .lines()
+            .last()
+            .expect("there will be at least one line of help");
         writeln!(f, "\n{}", help)?;
     }
     Ok(())
