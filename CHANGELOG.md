@@ -8,6 +8,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `add_help` and `add_help_with` methods for `Error`.
+
+### Changed
+
+- Deprecate `set_help` and `set_help_owned` methods for `Error` type.
+
 ## [0.2.0] - 2022-09-29
 
 ### Added

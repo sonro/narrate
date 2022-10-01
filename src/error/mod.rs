@@ -208,14 +208,40 @@ impl Error {
 
     /// Set this error's help message to an owned [`String`]
     #[inline]
+    #[deprecated]
     pub fn set_help_owned(&mut self, msg: String) {
         self.help = Some(HelpMsg::Owned(msg));
     }
 
     /// Set this error's help message to a static `&str`
     #[inline]
+    #[deprecated]
     pub fn set_help(&mut self, msg: &'static str) {
         self.help = Some(HelpMsg::Static(msg));
+    }
+
+    pub fn add_help(&mut self, help: &'static str) {
+        match self.help {
+            Some(HelpMsg::Owned(ref mut existing)) => {
+                existing.push('\n');
+                existing.push_str(help);
+            }
+            Some(HelpMsg::Static(existing)) => {
+                self.help = Some(HelpMsg::Owned(format!("{}\n{}", existing, help)))
+            }
+
+            None => self.help = Some(HelpMsg::Static(help)),
+        }
+    }
+
+    pub fn add_help_with<C>(&mut self, help: C)
+    where
+        C: fmt::Display + Send + Sync + 'static,
+    {
+        self.help = Some(HelpMsg::Owned(match self.help() {
+            Some(existing) => format!("{}\n{}", existing, help),
+            None => help.to_string(),
+        }));
     }
 }
 

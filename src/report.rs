@@ -57,7 +57,7 @@ where
 /// # use narrate::Error;
 /// # use narrate::report;
 /// let mut error = Error::new(CliError::Config);
-/// error.set_help("try something else");
+/// error.add_help("try something else");
 /// # /*
 /// report::err(&error);
 /// # */

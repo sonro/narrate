@@ -35,8 +35,6 @@ where
 }
 
 mod ext {
-    use crate::error::HelpMsg;
-
     use super::*;
 
     pub trait StdError {
@@ -64,7 +62,7 @@ mod ext {
 
         fn ext_add_help(self, help: &'static str) -> Error {
             let mut err = Error::from(self);
-            err.set_help(help);
+            err.add_help(help);
             err
         }
 
@@ -73,7 +71,7 @@ mod ext {
             C: Display + Send + Sync + 'static,
         {
             let mut err = Error::from(self);
-            err.set_help_owned(help.to_string());
+            err.add_help_with(help);
             err
         }
     }
@@ -87,15 +85,7 @@ mod ext {
         }
 
         fn ext_add_help(mut self, help: &'static str) -> Error {
-            match self.help {
-                Some(HelpMsg::Owned(ref mut msg)) => {
-                    msg.push('\n');
-                    msg.push_str(help);
-                }
-                Some(HelpMsg::Static(msg)) => self.set_help_owned(format!("{}\n{}", msg, help)),
-
-                None => self.set_help(help),
-            }
+            self.add_help(help);
             self
         }
 
@@ -103,10 +93,7 @@ mod ext {
         where
             C: Display + Send + Sync + 'static,
         {
-            match self.help() {
-                Some(msg) => self.set_help_owned(format!("{}\n{}", msg, help)),
-                None => self.set_help_owned(help.to_string()),
-            }
+            self.add_help_with(help);
             self
         }
     }
