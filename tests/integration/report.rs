@@ -168,7 +168,12 @@ fn format_error_test_args(errors: &[Error]) -> Vec<String> {
 }
 
 fn test_bin<S: AsRef<str>>(binary: &str, args: &[S]) -> Output {
-    let mut full_args = vec!["run", "-q", "--all-features", "--bin", binary, "--"];
+    let mut full_args = vec!["run", "-q", "--all-features", "--bin", binary];
+    let target = std::env::var("RUSTC_TARGET");
+    if let Ok(ref target) = target {
+        full_args.extend_from_slice(&["--target", target]);
+    }
+    full_args.push("--");
     full_args.extend(args.iter().map(|a| a.as_ref()));
 
     Command::new("cargo")
