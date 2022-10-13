@@ -22,7 +22,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Testing
 
-- `Error` integration tests.
+#### Add Integration Tests
+
+- `Error`.
+- `Chain`.
 
 ## [0.2.0] - 2022-09-29
 

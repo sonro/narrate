@@ -1,5 +1,5 @@
 use anyhow::anyhow;
-use narrate::{Chain, CliError, Error};
+use narrate::{CliError, Error};
 
 use crate::util::{test_error_stub, ErrorStub, TestError};
 
@@ -81,32 +81,6 @@ fn wrapped_error_chain_downcast() {
 }
 
 #[test]
-fn chain_from_nested_error() {
-    let error = Error::new(TestError::Stub(ErrorStub));
-    let mut chain = error.chain();
-    assert_eq!(
-        TestError::Stub(ErrorStub).to_string(),
-        next_string(&mut chain)
-    );
-    assert_eq!(ErrorStub.to_string(), next_string(&mut chain));
-    assert!(chain.next().is_none());
-}
-
-#[test]
-fn wrapped_nested_error_chain() {
-    let context = "context";
-    let error = Error::new(TestError::Stub(ErrorStub)).wrap(context);
-    let mut chain = error.chain();
-    assert_eq!(context, next_string(&mut chain));
-    assert_eq!(
-        TestError::Stub(ErrorStub).to_string(),
-        next_string(&mut chain)
-    );
-    assert_eq!(ErrorStub.to_string(), next_string(&mut chain));
-    assert!(chain.next().is_none());
-}
-
-#[test]
 fn root_cause_from_function() {
     let error = Error::from(test_error_stub().expect_err("should error"));
     assert_ne!(
@@ -160,8 +134,4 @@ fn add_help_with_twice() {
     let combined = format!("{}\n{}", help_1, help_2);
     let expected = Some(combined.as_str());
     assert_eq!(expected, error.help());
-}
-
-fn next_string(chain: &mut Chain) -> String {
-    chain.next().expect("error source").to_string()
 }

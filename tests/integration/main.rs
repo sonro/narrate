@@ -1,3 +1,4 @@
+mod chain;
 mod error;
 mod report;
 pub(crate) mod util;
