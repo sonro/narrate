@@ -20,6 +20,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - [**BREAKING**] `report::err` module now only prints relevant help.
 - [**BREAKING**] `Error::downcast` method no longer returns an `anyhow::Result`.
 
+### Testing
+
+- `Error` integration tests.
+
 ## [0.2.0] - 2022-09-29
 
 ### Added

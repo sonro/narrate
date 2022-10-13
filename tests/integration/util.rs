@@ -1,9 +1,11 @@
+#![allow(dead_code)]
+
 use std::{
     error::Error as StdError,
     fmt::{Debug, Display},
 };
 
-use narrate::Result;
+use narrate::{CliError, Result};
 
 pub fn assert_function_error<E, F>(expected: &ExpectedErr<E>, function: F)
 where
@@ -16,8 +18,14 @@ where
     assert_eq!(expected.help_msg, err.help());
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ErrorStub;
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum TestError {
+    Stub(ErrorStub),
+    Cli(CliError),
+}
 
 impl Display for ErrorStub {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -27,8 +35,43 @@ impl Display for ErrorStub {
 
 impl StdError for ErrorStub {}
 
-pub fn always_errors() -> Result<(), ErrorStub> {
+macro_rules! fmt_err {
+    ($fmt:ident, $err:ident) => {
+        $fmt($err.to_string())
+    };
+}
+
+impl Display for TestError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut fmt = |err| write!(f, "TestError: {}", err);
+        match self {
+            Self::Stub(err) => fmt_err!(fmt, err),
+            Self::Cli(err) => fmt_err!(fmt, err),
+        }
+    }
+}
+
+impl StdError for TestError {
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+        Some(match self {
+            Self::Stub(err) => err,
+            Self::Cli(err) => err,
+        })
+    }
+}
+
+impl From<ErrorStub> for TestError {
+    fn from(err: ErrorStub) -> Self {
+        Self::Stub(err)
+    }
+}
+
+pub fn error_stub_res() -> Result<(), ErrorStub> {
     Err(ErrorStub)
+}
+
+pub fn test_error_stub() -> Result<(), TestError> {
+    Ok(error_stub_res()?)
 }
 
 pub struct ExpectedErr<E> {

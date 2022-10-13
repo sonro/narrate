@@ -2,19 +2,19 @@ use std::{env, fs, path::PathBuf};
 
 use narrate::{CliError, ErrorWrap};
 
-use crate::util::{always_errors, assert_function_error, ExpectedErr};
+use crate::util::{assert_function_error, error_stub_res, ExpectedErr};
 
 #[test]
 fn error_stub() {
     assert_function_error(&ExpectedErr::new("context"), || {
-        always_errors().wrap("context")
+        error_stub_res().wrap("context")
     });
 }
 
 #[test]
 fn cli_error_protocol() {
     assert_function_error(&ExpectedErr::new(CliError::Protocol), || {
-        always_errors().wrap(CliError::Protocol)
+        error_stub_res().wrap(CliError::Protocol)
     });
 }
 
