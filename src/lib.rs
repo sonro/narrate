@@ -25,8 +25,8 @@ pub use colored::Color;
 ///   user might take.
 #[derive(Debug)]
 pub struct Error {
-    pub(crate) inner: anyhow::Error,
-    pub(crate) help: Option<HelpMsg>,
+    inner: anyhow::Error,
+    help: Option<HelpMsg>,
 }
 
 /// Iterator of a chain of source errors.
@@ -184,7 +184,7 @@ pub trait ExitCode {
 }
 
 /// Standard command line application error
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub enum CliError {
     /// Invalid configuration
     Config,

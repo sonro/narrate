@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - `add_help` and `add_help_with` methods for `Error`.
+- `CliError` common trait implementations.
 
 ### Changed
 
