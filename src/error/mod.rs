@@ -234,13 +234,14 @@ impl Error {
         }
     }
 
-    pub fn add_help_with<C>(&mut self, help: C)
+    pub fn add_help_with<C, F>(&mut self, f: F)
     where
         C: fmt::Display + Send + Sync + 'static,
+        F: FnOnce() -> C,
     {
         self.help = Some(HelpMsg::Owned(match self.help() {
-            Some(existing) => format!("{}\n{}", existing, help),
-            None => help.to_string(),
+            Some(existing) => format!("{}\n{}", existing, f()),
+            None => f().to_string(),
         }));
     }
 }

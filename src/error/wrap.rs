@@ -30,7 +30,7 @@ where
         C: Display + Send + Sync + 'static,
         F: FnOnce() -> C,
     {
-        self.map_err(|err| err.ext_add_help_with(f()))
+        self.map_err(|err| err.ext_add_help_with(f))
     }
 }
 
@@ -44,9 +44,10 @@ mod ext {
 
         fn ext_add_help(self, help: &'static str) -> Error;
 
-        fn ext_add_help_with<C>(self, help: C) -> Error
+        fn ext_add_help_with<C, F>(self, f: F) -> Error
         where
-            C: Display + Send + Sync + 'static;
+            C: Display + Send + Sync + 'static,
+            F: FnOnce() -> C;
     }
 
     impl<E> StdError for E
@@ -66,12 +67,13 @@ mod ext {
             err
         }
 
-        fn ext_add_help_with<C>(self, help: C) -> Error
+        fn ext_add_help_with<C, F>(self, f: F) -> Error
         where
             C: Display + Send + Sync + 'static,
+            F: FnOnce() -> C,
         {
             let mut err = Error::from(self);
-            err.add_help_with(help);
+            err.add_help_with(f);
             err
         }
     }
@@ -89,11 +91,13 @@ mod ext {
             self
         }
 
-        fn ext_add_help_with<C>(mut self, help: C) -> Error
+        fn ext_add_help_with<C, F>(mut self, f: F) -> Error
         where
             C: Display + Send + Sync + 'static,
+            F: FnOnce() -> C,
+            F: FnOnce() -> C,
         {
-            self.add_help_with(help);
+            self.add_help_with(f);
             self
         }
     }

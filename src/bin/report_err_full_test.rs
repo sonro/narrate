@@ -21,7 +21,7 @@ fn main() {
             continue;
         }
         if help_flag {
-            error.add_help_with(arg);
+            error.add_help_with(|| arg);
             help_flag = false;
             continue;
         }
