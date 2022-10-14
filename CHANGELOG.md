@@ -27,6 +27,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - `Error`.
 - `Chain`.
 - `ExitCode`.
+- `CliError`.
 
 ## [0.2.0] - 2022-09-29
 
