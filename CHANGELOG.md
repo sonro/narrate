@@ -102,8 +102,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   exit codes.
 
 [Unreleased]: https://github.com/sonro/narrate/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/sonro/narrate/compare/v0.2.0
-[0.1.3]: https://github.com/sonro/narrate/compare/v0.1.3
-[0.1.2]: https://github.com/sonro/narrate/compare/v0.1.2
+[0.2.0]: https://github.com/sonro/narrate/releases/tag/v0.2.0
+[0.1.3]: https://github.com/sonro/narrate/releases/tag/v0.1.3
+[0.1.2]: https://github.com/sonro/narrate/releases/tag/v0.1.2
 [0.1.1]: https://github.com/sonro/narrate/releases/tag/v0.1.1
 [0.1.0]: https://github.com/sonro/narrate/releases/tag/v0.1.0
