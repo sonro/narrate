@@ -31,6 +31,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - `CliError`.
 - Further `wrap` tests.
 
+### Documentation
+
+- Add minimum supported rust version: 1.61
+
 ## [0.2.0] - 2022-09-29
 
 ### Added
