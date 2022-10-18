@@ -77,6 +77,10 @@ pub fn error_stub_res() -> Result<(), ErrorStub> {
     Err(ErrorStub)
 }
 
+pub fn ok_res() -> Result<(), ErrorStub> {
+    Ok(())
+}
+
 pub fn test_error_stub() -> Result<(), TestError> {
     Ok(error_stub_res()?)
 }
