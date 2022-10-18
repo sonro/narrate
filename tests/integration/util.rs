@@ -5,17 +5,24 @@ use std::{
     fmt::{Debug, Display},
 };
 
-use narrate::{CliError, Result};
+use narrate::{CliError, Error, Result};
 
 pub fn assert_function_error<E, F>(expected: &ExpectedErr<E>, function: F)
 where
     E: Display + Debug + Send + Sync + 'static,
     F: FnOnce() -> Result<()>,
 {
-    let err = function().expect_err("function should error");
-    assert!(err.is::<E>());
-    assert_eq!(err.to_string(), expected.to_string());
-    assert_eq!(expected.help_msg, err.help());
+    let error = function().expect_err("function should error");
+    assert_error(expected, error);
+}
+
+pub fn assert_error<E>(expected: &ExpectedErr<E>, error: Error)
+where
+    E: Display + Debug + Send + Sync + 'static,
+{
+    assert!(error.is::<E>());
+    assert_eq!(expected.to_string(), error.to_string());
+    assert_eq!(expected.help_msg, error.help());
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -74,12 +81,12 @@ pub fn test_error_stub() -> Result<(), TestError> {
     Ok(error_stub_res()?)
 }
 
-pub struct ExpectedErr<E> {
+pub struct ExpectedErr<'a, E> {
     error: E,
-    help_msg: Option<&'static str>,
+    help_msg: Option<&'a str>,
 }
 
-impl<E> ExpectedErr<E> {
+impl<'a, E> ExpectedErr<'a, E> {
     pub fn new(err: E) -> Self {
         Self {
             error: err,
@@ -87,7 +94,7 @@ impl<E> ExpectedErr<E> {
         }
     }
 
-    pub fn new_with_help(err: E, help_msg: &'static str) -> Self {
+    pub fn new_with_help(err: E, help_msg: &'a str) -> Self {
         Self {
             error: err,
             help_msg: Some(help_msg),
@@ -95,7 +102,7 @@ impl<E> ExpectedErr<E> {
     }
 }
 
-impl<E: Display> Display for ExpectedErr<E> {
+impl<'a, E: Display> Display for ExpectedErr<'a, E> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.error.fmt(f)
     }

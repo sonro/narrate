@@ -1,26 +1,26 @@
 use anyhow::anyhow;
 use narrate::{CliError, Error};
 
-use crate::util::{test_error_stub, ErrorStub, TestError};
+use crate::util::{assert_error, test_error_stub, ErrorStub, ExpectedErr, TestError};
 
 #[test]
-fn new_transparent_display() {
+fn new() {
     let error = Error::new(ErrorStub);
-    assert_eq!(ErrorStub.to_string(), error.to_string());
+    assert_error(&ExpectedErr::new(ErrorStub), error)
 }
 
 #[test]
-fn from_anyhow_transparent_display() {
-    let any_err = anyhow!("anyhow error");
-    let original_msg = any_err.to_string();
+fn from_anyhow() {
+    let msg = "anyhow error";
+    let any_err = anyhow!(msg);
     let error = Error::from_anyhow(any_err);
-    assert_eq!(original_msg, error.to_string());
+    assert_error(&ExpectedErr::new(msg), error)
 }
 
 #[test]
 fn wrap_transparent_display() {
     let error = Error::new(ErrorStub).wrap(CliError::Temporary);
-    assert_eq!(CliError::Temporary.to_string(), error.to_string());
+    assert_error(&ExpectedErr::new(CliError::Temporary), error)
 }
 
 #[test]
@@ -91,17 +91,11 @@ fn root_cause_from_function() {
 }
 
 #[test]
-fn help() {
-    let error = Error::new(ErrorStub);
-    assert_eq!(None, error.help());
-}
-
-#[test]
 fn add_help_once() {
     let help = "help message";
     let mut error = Error::new(ErrorStub);
     error.add_help(help);
-    assert_eq!(Some(help), error.help());
+    assert_error(&ExpectedErr::new_with_help(ErrorStub, help), error);
 }
 
 #[test]
@@ -112,8 +106,7 @@ fn add_help_twice() {
     error.add_help(help_1);
     error.add_help(help_2);
     let combined = format!("{}\n{}", help_1, help_2);
-    let expected = Some(combined.as_str());
-    assert_eq!(expected, error.help());
+    assert_error(&ExpectedErr::new_with_help(ErrorStub, &combined), error);
 }
 
 #[test]
@@ -121,7 +114,7 @@ fn add_help_with() {
     let msg = "help";
     let mut error = Error::new(ErrorStub);
     error.add_help_with(|| msg);
-    assert_eq!(Some(msg), error.help());
+    assert_error(&ExpectedErr::new_with_help(ErrorStub, msg), error);
 }
 
 #[test]
@@ -132,6 +125,5 @@ fn add_help_with_twice() {
     error.add_help_with(|| help_1);
     error.add_help_with(|| help_2);
     let combined = format!("{}\n{}", help_1, help_2);
-    let expected = Some(combined.as_str());
-    assert_eq!(expected, error.help());
+    assert_error(&ExpectedErr::new_with_help(ErrorStub, &combined), error);
 }
