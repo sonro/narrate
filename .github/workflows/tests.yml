@@ -91,6 +91,9 @@ jobs:
 
   clippy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        feature: [default, cli-error, error, report]
     steps:
       - uses: actions/checkout@v2
 
@@ -119,4 +122,4 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: -- -D warnings
+          args: --no-default-features --features ${{ matrix.feature }} -- -D warnings
