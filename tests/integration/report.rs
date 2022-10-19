@@ -1,14 +1,17 @@
-use std::process::{Command, Output, Stdio};
+use std::{
+    ffi::OsStr,
+    process::{Command, Output, Stdio},
+};
 
 use narrate::{error_from, Error};
 
-const STATUS_TEST_NAME: &str = "status_test";
-const ERR_TEST_NAME: &str = "report_err_test";
-const ERR_FULL_TEST_NAME: &str = "report_err_full_test";
+const STATUS_TEST_BIN: &str = env!("CARGO_BIN_EXE_status_test");
+const ERR_TEST_BIN: &str = env!("CARGO_BIN_EXE_report_err_test");
+const ERR_FULL_TEST_BIN: &str = env!("CARGO_BIN_EXE_report_err_full_test");
 
 #[test]
 fn status_output_to_stderr() {
-    let output = test_bin(STATUS_TEST_NAME, &["hi", "world", "green"]);
+    let output = test_bin(STATUS_TEST_BIN, &["hi", "world", "green"]);
     // don't test for color because `status()` only outputs it to a TTY
     // by piping stderr in `test_bin` we therefore remove the color output
     let expected = format!("{:>12} {}\n", "hi", "world");
@@ -21,7 +24,7 @@ mod err {
     fn err_check(errors: &[Error]) {
         let args = format_error_test_args(errors);
         let expected = format_error_test_expected(&errors[(errors.len() - 1)..]);
-        let output = test_bin(ERR_TEST_NAME, &args);
+        let output = test_bin(ERR_TEST_BIN, &args);
         assert_stderr(&expected, &output);
     }
 
@@ -67,7 +70,7 @@ mod err_full {
     fn err_full_check(errors: &[Error]) {
         let args = format_error_test_args(errors);
         let expected = format_error_test_expected(errors);
-        let output = test_bin(ERR_FULL_TEST_NAME, &args);
+        let output = test_bin(ERR_FULL_TEST_BIN, &args);
         assert_stderr(&expected, &output);
     }
 
@@ -167,17 +170,9 @@ fn format_error_test_args(errors: &[Error]) -> Vec<String> {
     args
 }
 
-fn test_bin<S: AsRef<str>>(binary: &str, args: &[S]) -> Output {
-    let mut full_args = vec!["run", "-q", "--all-features", "--bin", binary];
-    let target = std::env::var("RUSTC_TARGET");
-    if let Ok(ref target) = target {
-        full_args.extend_from_slice(&["--target", target]);
-    }
-    full_args.push("--");
-    full_args.extend(args.iter().map(|a| a.as_ref()));
-
-    Command::new("cargo")
-        .args(full_args)
+fn test_bin<S: AsRef<OsStr>>(binary: &str, args: &[S]) -> Output {
+    Command::new(binary)
+        .args(args)
         .stderr(Stdio::piped())
         .spawn()
         .unwrap_or_else(|err| panic!("Failed to execute binary for testing: {}. {}", binary, err))
