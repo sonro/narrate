@@ -2,6 +2,7 @@ use std::io::{self, stderr, Write};
 
 use colored::{Color, Colorize};
 
+#[cfg(feature = "error")]
 use crate::Error;
 
 const STDERR: &str = "writing to stderr";
@@ -159,6 +160,7 @@ pub fn err_full(err: &Error) {
 }
 
 #[inline]
+#[cfg(feature = "error")]
 fn format_error_title(err: &Error, color: bool, f: &mut io::StderrLock) -> io::Result<()> {
     let color = match color {
         true => Some(Color::Red),
@@ -168,6 +170,7 @@ fn format_error_title(err: &Error, color: bool, f: &mut io::StderrLock) -> io::R
 }
 
 #[inline]
+#[cfg(feature = "error")]
 fn format_error_causes(err: &Error, color: bool, f: &mut io::StderrLock) -> io::Result<()> {
     let color = match color {
         true => Some(Color::Red),
@@ -180,6 +183,7 @@ fn format_error_causes(err: &Error, color: bool, f: &mut io::StderrLock) -> io::
 }
 
 #[inline]
+#[cfg(feature = "error")]
 fn format_error_help_all(err: &Error, f: &mut io::StderrLock) -> io::Result<()> {
     if let Some(help) = err.help() {
         writeln!(f, "\n{}", help)?;
@@ -188,6 +192,7 @@ fn format_error_help_all(err: &Error, f: &mut io::StderrLock) -> io::Result<()> 
 }
 
 #[inline]
+#[cfg(feature = "error")]
 fn format_error_help(err: &Error, f: &mut io::StderrLock) -> io::Result<()> {
     if let Some(help) = err.help() {
         let help = help
@@ -200,6 +205,7 @@ fn format_error_help(err: &Error, f: &mut io::StderrLock) -> io::Result<()> {
 }
 
 #[inline]
+#[cfg(feature = "error")]
 fn format_line<T, M>(
     title: T,
     msg: M,
