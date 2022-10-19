@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Features for conditional compilation of separate utilities. See #12.
+- All features enabled by default [report, error, cli-error]. See #12.
+
 ## [0.3.0] - 2022-10-19
 
 ### Added

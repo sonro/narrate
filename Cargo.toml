@@ -11,8 +11,29 @@ readme = "README.md"
 [package.metadata]
 msrv = "1.61.0"
 
+[features]
+default = ["cli-error", "error", "report"]
+cli-error = []
+error = ["dep:anyhow"]
+report = ["dep:anyhow", "dep:atty", "dep:colored"]
+
 [dependencies]
-anyhow = "1.0.63"
-atty = "0.2.14"
-colored = "2.0.0"
-exitcode = "1.1.2"
+anyhow = { version = "1.0.63", optional = true }
+atty = { version = "0.2.14", optional = true }
+colored = { version = "2.0.0", optional = true }
+exitcode = { version = "1.1.2" }
+
+[[bin]]
+name = "report_err_full_test"
+test = false
+required-features = ["error", "report"]
+
+[[bin]]
+name = "report_err_test"
+test = false
+required-features = ["error", "report"]
+
+[[bin]]
+name = "status_test"
+test = false
+required-features = ["report"]

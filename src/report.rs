@@ -65,6 +65,7 @@ where
 /// //
 /// // try something else
 /// ```
+#[cfg(feature = "error")]
 pub fn err(err: &Error) {
     let color = atty::is(atty::Stream::Stderr);
     let mut f = stderr().lock();
@@ -148,6 +149,7 @@ pub fn err(err: &Error) {
 ///     }
 /// }
 /// ```
+#[cfg(feature = "error")]
 pub fn err_full(err: &Error) {
     let color = atty::is(atty::Stream::Stderr);
     let mut f = stderr().lock();

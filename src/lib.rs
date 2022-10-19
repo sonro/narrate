@@ -1,16 +1,27 @@
-use std::{fmt::Display, path::PathBuf};
+#[cfg(feature = "error")]
+use std::fmt::Display;
+#[cfg(feature = "cli-error")]
+use std::path::PathBuf;
 
+#[cfg(feature = "error")]
 use error::HelpMsg;
 
+#[cfg(feature = "cli-error")]
 mod cli_error;
+#[cfg(feature = "error")]
 mod error;
+#[cfg(feature = "error")]
 mod macros;
 
+#[cfg(feature = "report")]
 pub mod report;
 
+#[cfg(any(feature = "report", feature = "error"))]
 pub use anyhow;
+#[cfg(feature = "report")]
 pub use colored;
 
+#[cfg(feature = "report")]
 pub use colored::Color;
 
 /// Wrapper around a dynamic error type with an optional help message.
@@ -24,6 +35,7 @@ pub use colored::Color;
 /// - `Error` may contain a help message in order to suggest further actions a
 ///   user might take.
 #[derive(Debug)]
+#[cfg(feature = "error")]
 pub struct Error {
     inner: anyhow::Error,
     help: Option<HelpMsg>,
@@ -50,6 +62,7 @@ pub struct Error {
 /// ```
 #[derive(Clone, Default)]
 #[repr(transparent)]
+#[cfg(feature = "error")]
 pub struct Chain<'a> {
     inner: anyhow::Chain<'a>,
 }
@@ -108,6 +121,7 @@ pub struct Chain<'a> {
 /// }
 ///
 /// ```
+#[cfg(feature = "error")]
 pub type Result<T, E = Error> = core::result::Result<T, E>;
 
 /// Provides `wrap`, `wrap_help` and `wrap_help_owned` methods for `Result`.
@@ -145,6 +159,7 @@ pub type Result<T, E = Error> = core::result::Result<T, E>;
 ///     Ok(content)
 /// }
 /// ```
+#[cfg(feature = "error")]
 pub trait ErrorWrap<T, E>: error::wrap::private::Sealed
 where
     E: Send + Sync + 'static,
@@ -185,6 +200,7 @@ pub trait ExitCode {
 
 /// Standard command line application error
 #[derive(Debug, PartialEq, Eq, Hash)]
+#[cfg(feature = "cli-error")]
 pub enum CliError {
     /// Invalid configuration
     Config,
