@@ -27,6 +27,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          target: ${{ matrix.on.target }}
+          override: true
+
       - name: Generate Cargo.lock
         uses: actions-rs/cargo@v1
         with:
@@ -41,12 +47,6 @@ jobs:
             ~/.cargo/git
             target 
           key: ${{ matrix.rust }}-${{ matrix.on.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust }}
-          target: ${{ matrix.on.target }}
-          override: true
 
       - name: Build tests
         uses: actions-rs/cargo@v1
@@ -88,6 +88,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          profile: minimal
+          components: clippy
+
       - name: Generate Cargo.lock
         uses: actions-rs/cargo@v1
         with:
@@ -101,13 +108,6 @@ jobs:
             ~/.cargo/git
             target 
           key: clippy-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          profile: minimal
-          components: clippy
 
       - name: Run clippy
         uses: actions-rs/cargo@v1
