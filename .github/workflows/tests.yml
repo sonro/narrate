@@ -48,13 +48,6 @@ jobs:
           target: ${{ matrix.on.target }}
           override: true
 
-      - name: Build testing binaries
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.use-cross }}
-          command: build
-          args: --bins --target ${{ matrix.on.target }}
-
       - name: Build tests
         uses: actions-rs/cargo@v1
         with:
@@ -63,8 +56,6 @@ jobs:
           args: --no-run --target ${{ matrix.on.target }}
 
       - name: Run tests
-        env: 
-            RUSTC_TARGET: ${{ matrix.on.target }}
         uses: actions-rs/cargo@v1
         with:
           use-cross: ${{ matrix.use-cross }}
