@@ -148,6 +148,21 @@ wrapper around [Anyhow].
 
   ![report::status output](/docs/report_status.png?raw=true)
 
+## Contributing
+
+**Thank you very much for considering to contribute to this project!**
+
+We welcome any form of contribution:
+
+- New issues (feature requests, bug reports, questions, ideas, ...)
+- Pull requests (documentation improvements, code improvements, new features,
+  ...)
+
+**Note**: Before you take the time to open a pull request, please open an issue
+first.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
 ## License
 
 narrate is distributed under the terms of both the MIT license and the
