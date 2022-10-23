@@ -75,7 +75,8 @@ pub struct Chain<'a> {
 ///
 /// `narrate::Result` may be used with one *or* two type parameters. Therefore
 /// you can import it and not worry about which `Result` you are using. Using it
-/// with two types is functionally the same as rust's standard `Result` type.
+/// with two types is functionally the same as rust's standard
+/// [`Result`](core::result::Result) type.
 ///
 /// ```
 /// use narrate::Result;
