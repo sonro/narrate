@@ -1,4 +1,4 @@
-use crate::{CliError, Error, ExitCode};
+use crate::{CliError, ExitCode};
 
 impl ExitCode for anyhow::Error {
     fn exit_code(&self) -> i32 {
@@ -7,7 +7,7 @@ impl ExitCode for anyhow::Error {
         }
 
         #[cfg(feature = "error")]
-        if let Some(err) = self.downcast_ref::<Error>() {
+        if let Some(err) = self.downcast_ref::<crate::Error>() {
             return err.exit_code();
         }
 
@@ -16,7 +16,7 @@ impl ExitCode for anyhow::Error {
 }
 
 #[cfg(feature = "error")]
-impl ExitCode for Error {
+impl ExitCode for crate::Error {
     fn exit_code(&self) -> i32 {
         self.inner.exit_code()
     }
@@ -28,6 +28,7 @@ pub(crate) mod private {
     pub trait Sealed {}
 
     impl Sealed for anyhow::Error {}
-    impl Sealed for Error {}
+    #[cfg(feature = "error")]
+    impl Sealed for crate::Error {}
     impl Sealed for CliError {}
 }
