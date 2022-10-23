@@ -127,10 +127,18 @@ pub struct Chain<'a> {
 #[cfg(feature = "error")]
 pub type Result<T, E = Error> = core::result::Result<T, E>;
 
-/// Provides `wrap`, `wrap_help` and `wrap_help_owned` methods for `Result`.
+/// Provides `wrap` and `add_help` methods for [`Result`](core::Result::Result).
 ///
 /// This trait is sealed and cannot be implemented for types outside of
 /// `narrate`.
+///
+/// Useful for wrapping a potential error with additional context and/or help
+/// message.
+///
+/// ## Lazy evaluation
+///
+/// Use `wrap_with` and `add_help_with` methods for lazily evaluation of the
+/// added context.
 ///
 /// # Example
 ///
@@ -157,7 +165,8 @@ pub type Result<T, E = Error> = core::result::Result<T, E>;
 ///
 ///     let path = &it.path;
 ///     let content = fs::read(path)
-///         .wrap_with(|| format!("Failed to read instrs from {}", path.display()))?;
+///         .wrap_with(|| format!("Failed to read instrs from {}", path.display()))
+///         .add_help("list of instr in README.md")?;
 ///
 ///     Ok(content)
 /// }
@@ -167,21 +176,21 @@ pub trait ErrorWrap<T, E>: error::wrap::private::Sealed
 where
     E: Send + Sync + 'static,
 {
-    /// Wrap an error value with additional context
+    /// Wrap an error value with additional context.
     fn wrap<C>(self, context: C) -> Result<T, Error>
     where
         C: Display + Send + Sync + 'static;
 
-    /// Wrap an error value with additional context that is evaluated lazily
-    /// only once an error does occur.
+    /// Wrap an error value with lazily evaluated context.
     fn wrap_with<C, F>(self, f: F) -> Result<T, Error>
     where
         C: Display + Send + Sync + 'static,
         F: FnOnce() -> C;
 
-    /// Lazily evaluated error wrapper, with an additional static help message
+    /// Add a help message to an error value.
     fn add_help(self, help: &'static str) -> Result<T, Error>;
 
+    /// Add a lazily evaluated help message to an error value.
     fn add_help_with<C, F>(self, f: F) -> Result<T, Error>
     where
         C: Display + Send + Sync + 'static,
