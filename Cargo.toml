@@ -11,7 +11,7 @@ rust-version = "1.61.0"
 
 [features]
 default = ["cli-error", "error", "report"]
-cli-error = []
+cli-error = ["dep:exitcode"]
 anyhow = ["dep:anyhow"]
 error = ["anyhow"]
 report = ["anyhow", "dep:atty", "dep:colored"]
@@ -20,7 +20,7 @@ report = ["anyhow", "dep:atty", "dep:colored"]
 anyhow = { version = "1.0.63", optional = true }
 atty = { version = "0.2.14", optional = true }
 colored = { version = "2.0.0", optional = true }
-exitcode = { version = "1.1.2" }
+exitcode = { version = "1.1.2", optional = true }
 
 [[bin]]
 name = "report_err_full_test"
