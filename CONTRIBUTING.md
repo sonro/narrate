@@ -19,8 +19,9 @@ Our continuous integration workflow checks all pull requests to ensure:
 - No [clippy](https://github.com/rust-lang/rust-clippy) errors or warnings
 - [Rustfmt](https://github.com/rust-lang/rustfmt) is adhered to
 
-To check this on your own machine run `cargo test`, `cargo clippy`, and `cargo
-fmt --check`.
+Use the [`cicheck`](cicheck) shell script to run most of these checks on your
+machine. If you don't have a *nix machine with `sh` you can copy and paste the
+commands.
 
 ### MSRV
 
