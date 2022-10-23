@@ -8,10 +8,25 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- "anyhow" feature (enabled by default).
+- `cicheck` shell script for quickly checking if repo will pass CI checks.
+
 ### Changed
 
 - [**BREAKING**] Seal `ExitCode` trait. It was only useful with `CliError`
   anyway. Now the API reflects this.
+
+### Documentation
+
+- Fixed Minimum Support Rust Version formatting in `Cargo.toml`.
+
+#### `ErrorWrap` rustdoc
+
+- Fixed wrong method names.
+- Added more lazy evaluation information.
+- Updated example to be more complete.
 
 ### Added
 
