@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+set -e
+
+echo "fmt check"
+cargo fmt --check
+echo "clippy"
+printf "| default   features"
+cargo clippy -- -D warnings
+printf "| anyhow    feature "
+cargo clippy --no-default-features --features anyhow -- -D warnings
+printf "| report    feature "
+cargo clippy --no-default-features --features report -- -D warnings
+printf "| error     feature "
+cargo clippy --no-default-features --features error -- -D warnings
+printf "| cli-error feature "
+cargo clippy --no-default-features --features cli-error -- -D warnings
+echo "build tests"
+cargo test -q --no-run
+echo "run tests"
+cargo test -q
