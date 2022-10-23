@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- [**BREAKING**] Seal `ExitCode` trait. It was only useful with `CliError`
+  anyway. Now the API reflects this.
+
 ### Added
 
 - Features for conditional compilation of separate utilities. See #12.

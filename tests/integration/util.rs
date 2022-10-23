@@ -77,6 +77,10 @@ pub fn error_stub_res() -> Result<(), ErrorStub> {
     Err(ErrorStub)
 }
 
+pub fn cli_config_res() -> Result<(), CliError> {
+    Err(CliError::Config)
+}
+
 pub fn ok_res() -> Result<(), ErrorStub> {
     Ok(())
 }

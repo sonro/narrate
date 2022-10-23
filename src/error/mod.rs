@@ -1,8 +1,6 @@
 use std::{error::Error as StdError, fmt};
 
-#[cfg(feature = "cli-error")]
-use crate::CliError;
-use crate::{Chain, Error, ExitCode};
+use crate::{Chain, Error};
 
 mod chain;
 pub(crate) mod wrap;
@@ -248,12 +246,6 @@ impl Error {
     }
 }
 
-impl ExitCode for Error {
-    fn exit_code(&self) -> i32 {
-        self.inner.exit_code()
-    }
-}
-
 impl<E> From<E> for Error
 where
     E: StdError + Send + Sync + 'static,
@@ -301,21 +293,6 @@ impl<'a> PartialEq<&'a str> for HelpMsg {
         match self {
             Self::Owned(l) => l == r,
             Self::Static(l) => l == r,
-        }
-    }
-}
-
-impl ExitCode for anyhow::Error {
-    fn exit_code(&self) -> i32 {
-        #[cfg(feature = "cli-error")]
-        if let Some(err) = self.downcast_ref::<CliError>() {
-            return err.exit_code();
-        }
-
-        if let Some(err) = self.downcast_ref::<Error>() {
-            err.exit_code()
-        } else {
-            exitcode::SOFTWARE
         }
     }
 }

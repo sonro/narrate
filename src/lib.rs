@@ -10,6 +10,8 @@ use error::HelpMsg;
 mod cli_error;
 #[cfg(feature = "error")]
 mod error;
+#[cfg(all(feature = "cli-error"))]
+mod exit_code;
 #[cfg(feature = "error")]
 mod macros;
 
@@ -185,13 +187,10 @@ where
         F: FnOnce() -> C;
 }
 
-/// Provide `exit_code` method for errors. Intended to be passed to
+/// Provide `exit_code` method for [CliError]. Intended to be passed to
 /// [`std::process::exit`].
-///
-/// Conforms to sysexits.h and defaults to `70` for "software error". Implementing
-/// this trait for your custom error types allows your application to return the
-/// correct code &mdash; even when wrapped in an [`Error`].
-pub trait ExitCode {
+#[cfg(feature = "cli-error")]
+pub trait ExitCode: exit_code::private::Sealed {
     /// CLI application exit code
     fn exit_code(&self) -> i32 {
         exitcode::SOFTWARE
