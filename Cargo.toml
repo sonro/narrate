@@ -14,8 +14,9 @@ msrv = "1.61.0"
 [features]
 default = ["cli-error", "error", "report"]
 cli-error = []
-error = ["dep:anyhow"]
-report = ["dep:anyhow", "dep:atty", "dep:colored"]
+anyhow = ["dep:anyhow"]
+error = ["anyhow"]
+report = ["anyhow", "dep:atty", "dep:colored"]
 
 [dependencies]
 anyhow = { version = "1.0.63", optional = true }
@@ -25,15 +26,18 @@ exitcode = { version = "1.1.2" }
 
 [[bin]]
 name = "report_err_full_test"
+doc = false
 test = false
 required-features = ["error", "report"]
 
 [[bin]]
 name = "report_err_test"
+doc = false
 test = false
 required-features = ["error", "report"]
 
 [[bin]]
 name = "status_test"
+doc = false
 test = false
 required-features = ["report"]

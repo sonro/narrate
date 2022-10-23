@@ -18,7 +18,7 @@ mod macros;
 #[cfg(feature = "report")]
 pub mod report;
 
-#[cfg(any(feature = "report", feature = "error"))]
+#[cfg(feature = "anyhow")]
 pub use anyhow;
 #[cfg(feature = "report")]
 pub use colored;
