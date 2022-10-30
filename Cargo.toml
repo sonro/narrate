@@ -35,6 +35,18 @@ test = false
 required-features = ["error", "report"]
 
 [[bin]]
+name = "report_anyhow_err_full_test"
+doc = false
+test = false
+required-features = ["report"]
+
+[[bin]]
+name = "report_anyhow_err_test"
+doc = false
+test = false
+required-features = ["report"]
+
+[[bin]]
 name = "status_test"
 doc = false
 test = false

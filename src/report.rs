@@ -220,7 +220,6 @@ fn format_error_help(err: &Error, f: &mut io::StderrLock) -> io::Result<()> {
 }
 
 #[inline]
-#[cfg(feature = "error")]
 fn format_line<T, M>(
     title: T,
     msg: M,

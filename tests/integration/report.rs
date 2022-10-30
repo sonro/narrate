@@ -8,6 +8,8 @@ use narrate::{error_from, Error};
 const STATUS_TEST_BIN: &str = env!("CARGO_BIN_EXE_status_test");
 const ERR_TEST_BIN: &str = env!("CARGO_BIN_EXE_report_err_test");
 const ERR_FULL_TEST_BIN: &str = env!("CARGO_BIN_EXE_report_err_full_test");
+const ANYHOW_ERR_TEST_BIN: &str = env!("CARGO_BIN_EXE_report_anyhow_err_test");
+const ANYHOW_ERR_FULL_TEST_BIN: &str = env!("CARGO_BIN_EXE_report_anyhow_err_full_test");
 
 #[test]
 fn status_output_to_stderr() {
@@ -16,6 +18,54 @@ fn status_output_to_stderr() {
     // by piping stderr in `test_bin` we therefore remove the color output
     let expected = format!("{:>12} {}\n", "hi", "world");
     assert_stderr(&expected, &output);
+}
+
+mod anyhow_err {
+    use anyhow::anyhow;
+
+    use super::*;
+
+    fn anyhow_err_check(errors: Vec<anyhow::Error>) {
+        let errors: Vec<Error> = errors.into_iter().map(Error::from_anyhow).collect();
+        let args = format_error_test_args(&errors);
+        let expected = format_error_test_expected(&errors[(errors.len() - 1)..]);
+        let output = test_bin(ANYHOW_ERR_TEST_BIN, &args);
+        assert_stderr(&expected, &output);
+    }
+
+    #[test]
+    fn single_error() {
+        anyhow_err_check(vec![anyhow!("test error string")]);
+    }
+
+    #[test]
+    fn double_error() {
+        anyhow_err_check(vec![anyhow!("first error"), anyhow!("second error")]);
+    }
+}
+
+mod anyhow_err_full {
+    use anyhow::anyhow;
+
+    use super::*;
+
+    fn anyhow_err_full_check(errors: Vec<anyhow::Error>) {
+        let errors: Vec<Error> = errors.into_iter().map(Error::from_anyhow).collect();
+        let args = format_error_test_args(&errors);
+        let expected = format_error_test_expected(&errors);
+        let output = test_bin(ANYHOW_ERR_FULL_TEST_BIN, &args);
+        assert_stderr(&expected, &output);
+    }
+
+    #[test]
+    fn single_error() {
+        anyhow_err_full_check(vec![anyhow!("test error string")]);
+    }
+
+    #[test]
+    fn double_error() {
+        anyhow_err_full_check(vec![anyhow!("first error"), anyhow!("second error")]);
+    }
 }
 
 mod err {
