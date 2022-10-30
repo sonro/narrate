@@ -127,7 +127,7 @@ pub struct Chain<'a> {
 #[cfg(feature = "error")]
 pub type Result<T, E = Error> = core::result::Result<T, E>;
 
-/// Provides `wrap` and `add_help` methods for [`Result`](core::Result::Result).
+/// Provides `wrap` and `add_help` methods for [`Result`](core::result::Result).
 ///
 /// This trait is sealed and cannot be implemented for types outside of
 /// `narrate`.
