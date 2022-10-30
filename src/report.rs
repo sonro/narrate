@@ -70,7 +70,7 @@ where
 pub fn err(err: &Error) {
     let color = atty::is(atty::Stream::Stderr);
     let mut f = stderr().lock();
-    format_error_title(err, color, &mut f).expect(STDERR);
+    format_error_title(err.to_string(), color, &mut f).expect(STDERR);
     format_error_help(err, &mut f).expect(STDERR);
 }
 
@@ -154,29 +154,44 @@ pub fn err(err: &Error) {
 pub fn err_full(err: &Error) {
     let color = atty::is(atty::Stream::Stderr);
     let mut f = stderr().lock();
-    format_error_title(err, color, &mut f).expect(STDERR);
-    format_error_causes(err, color, &mut f).expect(STDERR);
+    format_error_title(err.to_string(), color, &mut f).expect(STDERR);
+    format_error_causes(&err.inner, color, &mut f).expect(STDERR);
     format_error_help_all(err, &mut f).expect(STDERR);
 }
 
-#[inline]
-#[cfg(feature = "error")]
-fn format_error_title(err: &Error, color: bool, f: &mut io::StderrLock) -> io::Result<()> {
-    let color = match color {
-        true => Some(Color::Red),
-        false => None,
-    };
-    format_line("error", err.inner.to_string(), color, true, f)
+pub fn anyhow_err(err: &anyhow::Error) {
+    let color = atty::is(atty::Stream::Stderr);
+    let mut f = stderr().lock();
+    format_error_title(err.to_string(), color, &mut f).expect(STDERR);
+}
+
+pub fn anyhow_err_full(err: &anyhow::Error) {
+    let color = atty::is(atty::Stream::Stderr);
+    let mut f = stderr().lock();
+    format_error_title(err.to_string(), color, &mut f).expect(STDERR);
+    format_error_causes(err, color, &mut f).expect(STDERR);
 }
 
 #[inline]
-#[cfg(feature = "error")]
-fn format_error_causes(err: &Error, color: bool, f: &mut io::StderrLock) -> io::Result<()> {
+fn format_error_title(msg: String, color: bool, f: &mut io::StderrLock) -> io::Result<()> {
     let color = match color {
         true => Some(Color::Red),
         false => None,
     };
-    for cause in err.inner.chain().skip(1) {
+    format_line("error", msg, color, true, f)
+}
+
+#[inline]
+fn format_error_causes(
+    anyhow_err: &anyhow::Error,
+    color: bool,
+    f: &mut io::StderrLock,
+) -> io::Result<()> {
+    let color = match color {
+        true => Some(Color::Red),
+        false => None,
+    };
+    for cause in anyhow_err.chain().skip(1) {
         format_line("cause", cause.to_string(), color, false, f)?;
     }
     Ok(())
