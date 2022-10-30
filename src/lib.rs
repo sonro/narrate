@@ -10,7 +10,7 @@ use error::HelpMsg;
 mod cli_error;
 #[cfg(feature = "error")]
 mod error;
-#[cfg(all(feature = "cli-error"))]
+#[cfg(feature = "cli-error")]
 mod exit_code;
 #[cfg(feature = "error")]
 mod macros;
