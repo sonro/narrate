@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Features for conditional compilation of separate utilities. See #12.
 - All features enabled by default [report, error, cli-error, anyhow]. See #12.
 - `cicheck` shell script for quickly checking if repo will pass CI checks.
+- `anyhow` error reporting.
 
 ### Changed
 
