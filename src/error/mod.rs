@@ -3,6 +3,7 @@ use std::{error::Error as StdError, fmt};
 use crate::{Chain, Error};
 
 mod chain;
+mod macros;
 pub(crate) mod wrap;
 
 impl Error {

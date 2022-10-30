@@ -12,8 +12,6 @@ mod cli_error;
 mod error;
 #[cfg(feature = "cli-error")]
 mod exit_code;
-#[cfg(feature = "error")]
-mod macros;
 
 #[cfg(feature = "report")]
 pub mod report;
