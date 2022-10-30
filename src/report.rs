@@ -159,12 +159,76 @@ pub fn err_full(err: &Error) {
     format_error_help_all(err, &mut f).expect(STDERR);
 }
 
+/// Report an [`anyhow::Error`] to stderr
+///
+/// The message will consist of a red `error:` title, followed by the
+/// [`Display`](std::fmt::Display) impl for the underlying error.
+///
+/// # Example
+///
+/// ```
+/// # use anyhow::anyhow;
+/// # use narrate::report;
+/// let error = anyhow!("invalid configuration");
+/// # /*
+/// report::anyhow_err(&error);
+/// # */
+/// // error: invalid configuration
+/// ```
 pub fn anyhow_err(err: &anyhow::Error) {
     let color = atty::is(atty::Stream::Stderr);
     let mut f = stderr().lock();
     format_error_title(err.to_string(), color, &mut f).expect(STDERR);
 }
 
+/// Report an [`anyhow::Error`] to stderr, printing a list of causes
+///
+/// The message will consist of a red `error:` title, followed by the
+/// [`Display`](std::fmt::Display) impl for the underlying error.
+/// Each subsequent wrapped error will have a plain `cause:` title.
+///
+/// # Example
+///
+/// Context wrapped error.
+///
+/// ```
+/// # fn parse_config_file(path: &str) -> anyhow::Result<()> {
+/// #   Ok(())
+/// # }
+/// use narrate::report;
+/// use anyhow::{Context, Result};
+///
+/// fn setup_config() -> Result<()> {
+/// # /*
+///     ...
+/// # */
+/// # let path = "";
+///     let user_config = parse_config_file(&path)
+///         .with_context(|| format!("invalid config file: `{}`", &path))?;
+/// # /*
+///     ...
+/// # */
+/// # Ok(())
+/// }
+///
+/// fn main() {
+/// # /*
+///     ...
+/// # */
+///     let res = setup_config().context("invalid configuration");
+///     if let Err(ref err) = res {
+/// # /*
+///         report::anyhow_err_full(err);
+/// # */
+///         // error: invalid configuration
+///         // cause: invalid config file: `config.toml`
+///         // cause: missing key: `author`
+///     }
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
 pub fn anyhow_err_full(err: &anyhow::Error) {
     let color = atty::is(atty::Stream::Stderr);
     let mut f = stderr().lock();
