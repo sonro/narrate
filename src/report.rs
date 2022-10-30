@@ -107,7 +107,7 @@ pub fn err(err: &Error) {
 /// # /*
 ///     ...
 /// # */
-///     let res = setup_config().wrap_with(|| "invalid configuration");
+///     let res = setup_config().wrap("invalid configuration");
 ///     if let Err(ref err) = res {
 /// # /*
 ///         report::err_full(err);
