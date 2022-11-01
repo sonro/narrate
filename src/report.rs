@@ -1,3 +1,32 @@
+//! Functions for printing status and error messages to stderr.
+//!
+//! ## Report status
+//!
+//! Similar to [Cargo](https://github.com/rust-lang/cargo/) output, a [`status`]
+//! title is justified, colored and made bold. Coloring is provided by the
+//! [`Color`] enum.
+//!
+//! ## Report errors
+//!
+//! Use [`err`] or [`anyhow_err`] to print error information from either a
+//! [`narrate::Error`](Error) or an [`anyhow::Error`] respectively. Include
+//! error chains/causes in your output by using [`err_full`] or
+//! [`anyhow_err_full`].
+//!
+//! ## Features
+//!
+//! If you have no desire to use any of narrate's other features, you can use
+//! just this module's functionality by disabling the default features and just
+//! using "report".
+//!
+//! ```toml
+//! [dependencies]
+//! narrate = { version = "0.4.0", default-features = false, features = ["report"] }
+//! ```
+//!
+//! This will still allow you to report [anyhow errors](anyhow), but not [narrate
+//! errors](Error).
+
 use std::io::{self, stderr, Write};
 
 use colored::{Color, Colorize};
@@ -29,7 +58,7 @@ where
     format_status(title, msg, color, &mut f).expect(STDERR);
 }
 
-/// Report an error to stderr
+/// Report an [`Error`] to stderr.
 ///
 /// The message will consist of a red `error:` title, followed by the
 /// [`Display`](std::fmt::Display) impl for the underlying error.
@@ -37,7 +66,7 @@ where
 /// If the [`Error`] contains a help message, that will be printed 2 lines
 /// below.
 ///
-/// # Examples
+/// ## Examples
 ///
 /// Standard error.
 ///
@@ -74,13 +103,13 @@ pub fn err(err: &Error) {
     format_error_help(err, &mut f).expect(STDERR);
 }
 
-/// Report an error to stderr, printing a list of wrapped causes
+/// Report an [`Error`] to stderr, printing a list of causes
 ///
 /// The message will consist of a red `error:` title, followed by the
 /// [`Display`](std::fmt::Display) impl for the underlying error.
 /// Each subsequent wrapped error will have a plain `cause:` title.
 ///
-/// # Examples
+/// ## Examples
 ///
 /// Wrapped error.
 ///
@@ -164,7 +193,7 @@ pub fn err_full(err: &Error) {
 /// The message will consist of a red `error:` title, followed by the
 /// [`Display`](std::fmt::Display) impl for the underlying error.
 ///
-/// # Example
+/// ## Example
 ///
 /// ```
 /// # use anyhow::anyhow;
@@ -187,7 +216,7 @@ pub fn anyhow_err(err: &anyhow::Error) {
 /// [`Display`](std::fmt::Display) impl for the underlying error.
 /// Each subsequent wrapped error will have a plain `cause:` title.
 ///
-/// # Example
+/// ## Example
 ///
 /// Context wrapped error.
 ///

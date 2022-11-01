@@ -24,6 +24,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Fixed Minimum Support Rust Version formatting in `Cargo.toml`.
 
+#### API docs
+
+- Add `report` module.
+
 #### `ErrorWrap` rustdoc
 
 - Fixed wrong method names.
