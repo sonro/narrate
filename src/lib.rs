@@ -208,6 +208,7 @@ pub trait ExitCode: exit_code::private::Sealed {
 /// Standard command line application error
 #[derive(Debug, PartialEq, Eq, Hash)]
 #[cfg(feature = "cli-error")]
+#[non_exhaustive]
 pub enum CliError {
     /// Invalid configuration
     Config,

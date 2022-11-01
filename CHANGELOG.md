@@ -19,6 +19,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - [**BREAKING**] Seal `ExitCode` trait. It was only useful with `CliError`
   anyway. Now the API reflects this.
+- [**BREAKING**] Mark `CliError` as
+  [`non_exhaustive`](https://doc.rust-lang.org/reference/attributes/type_system.html)
+  to allow for more variants in the future.
 
 ### Documentation
 
