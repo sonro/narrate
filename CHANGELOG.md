@@ -22,6 +22,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - [**BREAKING**] Mark `CliError` as
   [`non_exhaustive`](https://doc.rust-lang.org/reference/attributes/type_system.html)
   to allow for more variants in the future.
+- `Error` `Debug` formatting is now similar to `report::err_full`. Now the
+  library is more similar anyhow in the way `Result` can be used.
 
 ### Documentation
 

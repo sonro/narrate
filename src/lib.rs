@@ -282,7 +282,6 @@ pub use colored::Color;
 ///   size instead of two.
 /// - `Error` may contain a help message in order to suggest further actions a
 ///   user might take.
-#[derive(Debug)]
 #[cfg(feature = "error")]
 pub struct Error {
     inner: anyhow::Error,

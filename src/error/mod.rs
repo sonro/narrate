@@ -271,6 +271,26 @@ impl fmt::Display for Error {
     }
 }
 
+impl fmt::Debug for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if f.alternate() {
+            return fmt::Debug::fmt(&self.inner, f);
+        }
+
+        write!(f, "{}", self.inner)?;
+
+        for cause in self.inner.chain().skip(1) {
+            write!(f, "\nCause: {cause}")?;
+        }
+
+        if let Some(ref help) = self.help {
+            write!(f, "\n\n Help: {help}")?;
+        }
+
+        Ok(())
+    }
+}
+
 impl AsRef<str> for HelpMsg {
     fn as_ref(&self) -> &str {
         match self {
