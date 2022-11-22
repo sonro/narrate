@@ -1,3 +1,251 @@
+//! [![github]](https://github.com/sonro/narrate)&ensp;[![crates-io]](https://crates.io/crates/narrate)&ensp;[![docs-rs]](https://docs.rs/narrate)
+//!
+//! [github]:
+//!     https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
+//! [crates-io]:
+//!     https://img.shields.io/badge/crates.io-fc8d62?style=for-the-badge&labelColor=555555&logo=rust
+//! [docs-rs]:
+//!     https://img.shields.io/badge/docs.rs-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs
+//!
+//! This library provides Rust CLI applications with console reporting and
+//! error-handling utilities. Console output is modeled after
+//! [Cargo](https://github.com/rust-lang/cargo), and the [`Error`] type is
+//! similar to [anyhow's](https://github.com/dtolnay/anyhow)
+//! [`Error`](https://docs.rs/anyhow/1/anyhow/struct.Error.html), but with
+//! optional help messages.
+//!
+//! Minimum supported Rust version: **1.61.1**
+//!
+//! # Features
+//!
+//! - Ergonomic [error-handling](#error-handling).
+//! - A set of typical CLI application [errors](#cli-errors) (with exit codes).
+//! - Errors and app status [reporting](report).
+//!
+//! #### Cargo Feature Flags
+//!
+//! All features are enabled by default, but they can be imported individually
+//! using [Cargo feature
+//! flags](https://doc.rust-lang.org/cargo/reference/features.html#dependency-features):
+//!
+//! - `error`: Enables error-handling with [`Error`], [`Result`] and
+//!   [`ErrorWrap`].
+//! - `cli-error`: Enables set of [`CliError`]s with their associated
+//!   [`exit_code`](ExitCode).
+//! - `report`: Enables reporting errors and statuses to the console with the
+//!   [`report`] module.
+//!
+//! ##### Example `Cargo.toml`
+//!
+//! ```toml
+//! ...
+//! [dependencies]
+//! narrate = { version = "0.4.0", default-features = false, features = ["report"] }
+//! ...
+//! ```
+//!
+//! ## Error Handling
+//!
+//! Use [`Result<T>`] as a return type for any fallible function. Within the
+//! function, use `?` to propagate any error that implements the
+//! [`std::error::Error`] trait. Same as
+//! [`anyhow::Result<T>`](https://docs.rs/anyhow/1.0/anyhow/type.Result.html).
+//!
+//! ```
+//! # struct User;
+//! use narrate::Result;
+//!
+//! fn get_user() -> Result<User> {
+//! # /*
+//!     let json = std::fs::read_to_string("user.json")?;
+//!     let user: User = serde_json::from_str(&json)?;
+//!     Ok(user)
+//! # */
+//! # Ok(User)
+//! }
+//! ```
+//!
+//! ### Error Wrap
+//!
+//! Wrap an error with more context by importing [`ErrorWrap`]. Similar to
+//! [`anyhow::Context`](https://docs.rs/anyhow/1.0/anyhow/trait.Context.html).
+//! Just add `.wrap(context)` after any function call that returns a `Result`.
+//!
+//! Context can be anything that implements [`Debug`](std::fmt::Debug),
+//! [`Display`](std::fmt::Display), [`Sync`] and [`Send`] -- including [`&str`],
+//! [`String`] and errors.
+//!
+//! ```rust
+//! use narrate::{ErrorWrap, Result, CliError};
+//!
+//! fn run() -> Result<()> {
+//! # /*
+//!     ...
+//!     // wrap with contextual &str
+//!     acquire().wrap("unable to acquire data")?;
+//!
+//!     // or wrap with another error
+//!     config.load().wrap(CliError::Config)?;
+//!     ...
+//! # */
+//! # Ok(())
+//! }
+//!
+//! # /*
+//! fn acquire() -> Result<(), io::Error> {
+//!     ...
+//! }
+//! # */
+//! ```
+//!
+//! Console output:
+//!
+//! ```console
+//! error: unable to acquire data
+//! cause: oh no!
+//! ```
+//!
+//! #### Lazy evaluation
+//!
+//! If your context requires some work to create/format, you should use
+//! [`wrap_with`](ErrorWrap::wrap_with) instead.
+//!
+//! ```rust
+//! use narrate::{ErrorWrap, Result, CliError};
+//!
+//! fn run() -> Result<()> {
+//! # /*
+//!     ...
+//!     // wrap with a formatted string
+//!     data.store(path).wrap_with(|| format!("can't save to: {path}"))?;
+//!
+//!     // wrap with a computed error
+//!     data.store(path)
+//!         .wrap_with(|| CliError::WriteFile(PathBuf::from(path)))?;
+//!     ...
+//! # */
+//! # Ok(())
+//! }
+//! ```
+//!
+//! ### Help Message Wrap
+//!
+//! Add separate help text to an error. By importing [`ErrorWrap`] you also get
+//! the `add_help` method and its lazy version `add_help_with`.
+//!
+//! ```rust
+//! use narrate::{ErrorWrap, Result};
+//!
+//! fn run() -> Result<()> {
+//! # /*
+//!     Project::new(path).add_help("try using `project init`")?;
+//!     ...
+//! # */
+//! # Ok(())
+//! }
+//! ```
+//!
+//! Console output:
+//!
+//! ```console
+//! error: directory already exists: '/home/dev/cool-project'
+//!
+//! try using `project init`
+//! ```
+//!
+//! #### Combination
+//!
+//! Mix and match the `ErrorWrap` methods throughout your application to make
+//! sure the user gets all the information they need.
+//!
+//! ```rust
+//! use narrate::{ErrorWrap, Result};
+//! # use std::path::Path;
+//!
+//! fn run() -> Result<()> {
+//! # /*
+//!     ...
+//!     new_project(&path).wrap("cannot create project")?;
+//!     ...
+//! # */
+//! # Ok(())
+//! }
+//!
+//! fn new_project(path: &Path) -> Result<()> {
+//! # /*
+//!     ...
+//!     create_dir(path)
+//!         .wrap_with(|| format!(
+//!             "unable to create directory: '{}'",
+//!             path.display()
+//!         ))
+//!         .add_help(
+//!             "try using `project init` inside your existing directory"
+//!         )?;
+//!     ...
+//! # */
+//! # Ok(())
+//! }
+//! ```
+//!
+//! Console output:
+//!
+//! ```console
+//! error: cannot create project
+//! cause: unable to create directory: '/home/dev/cool-project'
+//! cause: Is a directory (os error 20)
+//!
+//! try using `project init` inside your existing directory
+//! ```
+//!
+//! ## CLI Errors
+//!
+//! Use [`CliError`] for a set of common errors that can occur in a command-line
+//! application. These can be used to avoid adding repetitive context for IO
+//! errors.
+//!
+//! ```
+//! use narrate::{bail, ErrorWrap, Result, CliError};
+//!
+//! fn run() -> Result<()> {
+//! # /*
+//!     ...
+//!     match args.operation {
+//!         Op::Get => fetch_data(res_name).wrap_with(|| CliError::ResourceNotFound(res_name))?,
+//!         Op::Set(data) => set_data(res_name, data).wrap(CliError::InputData)?,
+//!         _ => bail!(CliError::Protocol),
+//!     }
+//!     ...
+//! # */
+//! # Ok(())
+//! }
+//! ```
+//!
+//! ### Exit Codes
+//!
+//! As this selection of errors can often be fatal for an application, this
+//! library provides access to a set of standard program exit codes via the
+//! [`ExitCode`] trait. These adhere to
+//! [sysexits.h](https://man.openbsd.org/sysexits).
+//!
+//! Both [`anyhow::Error`] and [`narrate::Error`](Error) implement this trait, thus can
+//! provide exit codes. If no [`CliError`] is found as an underlying error, the
+//! code will be `70` (for internal software error).
+//!
+//! Import the [`ExitCode`] trait to use the `exit_code` function, and use
+//! [`std::process::exit`] to exit the program with the appropriate code.
+//!
+//! ```
+//! # /*
+//! use narrate::ExitCode;
+//!
+//! if let Err(err) = run() {
+//!     std::process::exit(err.exit_code());
+//! }
+//! # */
+//! ```
+//!
+
 #[cfg(feature = "error")]
 use std::fmt::Display;
 #[cfg(feature = "cli-error")]

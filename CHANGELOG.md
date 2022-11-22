@@ -29,6 +29,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 #### API docs
 
+- Add crate root.
 - Add `report` module.
 
 #### `ErrorWrap` rustdoc
