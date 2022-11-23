@@ -1,3 +1,5 @@
+//! Print status message to command line
+
 use colored::Color;
 use narrate::report;
 
