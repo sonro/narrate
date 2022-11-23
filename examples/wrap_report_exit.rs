@@ -1,3 +1,8 @@
+//! - Wraps errors in string and error contexts.
+//! - Adds help text
+//! - Reports to stderr
+//! - Exits with error code
+
 use narrate::{report, CliError, Error, ErrorWrap, ExitCode, Result};
 
 fn main() {
