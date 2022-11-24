@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.0] - 2022-11-24
+
 ### Added
 
 - Features for conditional compilation of separate utilities. See #12.
@@ -136,7 +138,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - `ExitCode` trait for [sysexits.h](https://man.openbsd.org/sysexits.3) program
   exit codes.
 
-[Unreleased]: https://github.com/sonro/narrate/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/sonro/narrate/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/sonro/narrate/releases/tag/v0.4.0
 [0.3.0]: https://github.com/sonro/narrate/releases/tag/v0.3.0
 [0.2.0]: https://github.com/sonro/narrate/releases/tag/v0.2.0
 [0.1.3]: https://github.com/sonro/narrate/releases/tag/v0.1.3
