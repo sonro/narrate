@@ -9,7 +9,7 @@
 
 This library provides CLI application error and status reporting utilities. The
 coloured output formatting aims to be similar to [Cargo]. Error type is a
-wrapper around [Anyhow].
+wrapper around [anyhow], with optional help messages.
 
 ## Features
 
@@ -19,7 +19,7 @@ wrapper around [Anyhow].
 - Set of standard CLI errors with exit codes conforming to
   [sysexits.h]
 - Convenience `Result` type
-- Drop in replacement for [Anyhow]
+- Replace/integrate with [anyhow]
 
 ## How to use
 
@@ -80,8 +80,8 @@ wrapper around [Anyhow].
 - Use the
   [`narrate::ExitCode`](https://docs.rs/narrate/latest/narrate/trait.ExitCode.html)
   trait to get the [sysexits.h] conforming exit code from a `narrate::Error`. By
-  default this is just `70 (software error)` but it can be easily implemented
-  for any type.
+  default this is just `70 (software error)`, but using an apropriate `CliError`
+  will change this.
 
 - [`narrate::CliError`](https://docs.rs/narrate/latest/narrate/struct.CliError.html)
   collection of typical command line errors. Use them to add context to deeper
@@ -135,7 +135,7 @@ wrapper around [Anyhow].
   ![report::err_full output](/docs/report_err_full.png?raw=true)
 
 - Report application status to the command line with
-  [`report::status`](https://docs.rs/narrate/latest/narrate/report/status.err.html).
+  [`report::status`](https://docs.rs/narrate/latest/narrate/report/fn.status.html).
   Modeled on the output from [Cargo].
 
   ```rust
@@ -148,6 +148,50 @@ wrapper around [Anyhow].
   ```
 
   ![report::status output](/docs/report_status.png?raw=true)
+
+Please view the [API Docs](https://docs.rs/narrate/) and [examples](examples/)
+for more information.
+
+## FAQ
+
+### Should I use narrate instead of [anyhow] or [eyre]?
+
+Anyhow is a great tool for handling errors in your CLI app, but it doesn't come
+with its own reporting, common set of errors, or the ability to add separate
+help messages.
+
+Eyre and its companion crates offer fine-grained error reporting and is far more
+customizable than narrate - which is opinionated in copying Cargo's style. If
+you don't need that much control, narrate provides a simpler alternative. Plus
+the added benefit of reporting statuses, not just errors.
+
+### Can I just pretty print my [anyhow] errors?
+
+If you just use the `report`
+[Cargo feature flag](https://doc.rust-lang.org/cargo/reference/features.html#dependency-features),
+you can access the [`report`](https://docs.rs/narrate/latest/narrate/report)
+  module and thus the `anyhow_err` and `anyhow_err_full` functions.
+
+```toml
+# Cargo.toml
+[dependencies]
+narrate = { version = "0.4.0", default-features = false, features = ["report"] }
+```
+
+```rust
+// main.rs
+use narrate::report;
+
+fn main() {
+    if let Err(err) => run() {
+        report::anyhow_err_full(err);    
+    }
+}
+
+fn run() -> anyhow::Result<()> {
+  ...
+}
+```
 
 ## Contributing
 
@@ -172,5 +216,6 @@ Apache License (Version 2.0).
 See [LICENSE-APACHE](LICENSE-APACHE) and [LICENSE-MIT](LICENSE-MIT) for details.
 
 [Cargo]: https://github.com/rust-lang/cargo
-[Anyhow]: https://github.com/dtolnay/anyhow
+[anyhow]: https://github.com/dtolnay/anyhow
+[eyre]: https://github.com/yaahc/eyre
 [sysexits.h]: (https://man.openbsd.org/sysexits.3)
