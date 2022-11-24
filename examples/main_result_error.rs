@@ -7,7 +7,7 @@
 //! Error: outer error
 //! Cause: inner error
 //!
-//!  Help: help message
+//! help message
 //! ```
 
 use std::fmt;

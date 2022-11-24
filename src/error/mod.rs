@@ -284,7 +284,7 @@ impl fmt::Debug for Error {
         }
 
         if let Some(ref help) = self.help {
-            write!(f, "\n\n Help: {help}")?;
+            write!(f, "\n\n{help}")?;
         }
 
         Ok(())
