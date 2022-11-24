@@ -65,6 +65,30 @@
 //! }
 //! ```
 //!
+//! #### Returning from `main()`
+//!
+//! [`Result<T>`] can be used to return from `main()`. If any errors occur it
+//! prints the `Debug` implementation for [`Error`].
+//!
+//! ```no_run
+//! use narrate::{bail, Result};
+//!
+//! fn main() -> Result<()> {
+//!     inner_fn()?;
+//!     Ok(())
+//! }
+//!
+//! fn inner_fn() -> Result<()> {
+//!     bail!("internal error")
+//! }
+//! ```
+//!
+//! Console output:
+//!
+//! ```console
+//! Error: internal error
+//! ```
+//!
 //! ### Error Wrap
 //!
 //! Wrap an error with more context by importing [`ErrorWrap`]. Similar to
@@ -101,8 +125,8 @@
 //! Console output:
 //!
 //! ```console
-//! error: unable to acquire data
-//! cause: oh no!
+//! Error: unable to acquire data
+//! Cause: oh no!
 //! ```
 //!
 //! #### Lazy evaluation
@@ -148,7 +172,7 @@
 //! Console output:
 //!
 //! ```console
-//! error: directory already exists: '/home/dev/cool-project'
+//! Error: directory already exists: '/home/dev/cool-project'
 //!
 //! try using `project init`
 //! ```
@@ -191,9 +215,9 @@
 //! Console output:
 //!
 //! ```console
-//! error: cannot create project
-//! cause: unable to create directory: '/home/dev/cool-project'
-//! cause: Is a directory (os error 20)
+//! Error: cannot create project
+//! Cause: unable to create directory: '/home/dev/cool-project'
+//! Cause: Is a directory (os error 20)
 //!
 //! try using `project init` inside your existing directory
 //! ```
@@ -228,9 +252,9 @@
 //! [`ExitCode`] trait. These adhere to
 //! [sysexits.h](https://man.openbsd.org/sysexits).
 //!
-//! Both [`anyhow::Error`] and [`narrate::Error`](Error) implement this trait, thus can
-//! provide exit codes. If no [`CliError`] is found as an underlying error, the
-//! code will be `70` (for internal software error).
+//! Both [`anyhow::Error`] and [`narrate::Error`](Error) implement this trait,
+//! thus can provide exit codes. If no [`CliError`] is found as an underlying
+//! error, the code will be `70` (for internal software error).
 //!
 //! Import the [`ExitCode`] trait to use the `exit_code` function, and use
 //! [`std::process::exit`] to exit the program with the appropriate code.
