@@ -222,6 +222,34 @@
 //! try using `project init` inside your existing directory
 //! ```
 //!
+//! ### Convenience Macros
+//!
+//! Use the [`error_from`] macro to create an ad-hoc [`Error`] from a string or
+//! another error. Similar to [`anyhow!`](anyhow::anyhow).
+//!
+//! ```
+//! # use std::collections::HashMap;
+//! # use narrate::{error_from, Result};
+//! # fn run(map: HashMap<&'static str, String>, key: &str) -> Result<()> {
+//! let val = map.get(key).ok_or(error_from!("unknown key"))?;
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! Use [`bail`] to return early with an error. Equivalent to `return Err(error_from!(...))`.
+//!
+//!
+//! ```
+//! # use std::collections::HashMap;
+//! # use narrate::{bail, Result};
+//! # fn run(map: HashMap<&'static str, String>, key: &str) -> Result<()> {
+//! if !map.contains_key(key) {
+//!     bail!("unknown key");
+//! }
+//! # Ok(())
+//! # }
+//! ```
+//!
 //! ## CLI Errors
 //!
 //! Use [`CliError`] for a set of common errors that can occur in a command-line
