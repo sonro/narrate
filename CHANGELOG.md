@@ -28,6 +28,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Documentation
 
 - Fixed Minimum Support Rust Version formatting in `Cargo.toml`.
+- Add more examples.
 
 #### API docs
 
