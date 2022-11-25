@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `Error::msg` creation method.
+
 ## [0.4.0] - 2022-11-24
 
 ### Added

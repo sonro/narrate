@@ -21,6 +21,45 @@ impl Error {
         }
     }
 
+    /// Create a new error object from a printable error message.
+    ///
+    /// If the argument implements [`std::error::Error`], prefer [`Error::new`]
+    /// instead which preserves the underlying error's cause chain and
+    /// backtrace. If the argument may or may not implement `std::error::Error`
+    /// now or in the future, use [`error_from!(err)`](`crate::error_from`)
+    /// which handles either way correctly.
+    ///
+    /// `Error::msg("...")` is equivalent to `error_from!("...")` but
+    /// occasionally convenient in places where a function is preferable over a
+    /// macro, such as iterator or stream combinators:
+    ///
+    /// ```
+    /// # /*
+    /// use narrate::{Error, Result};
+    /// use futures::stream::{Stream, StreamExt, TryStreamExt};
+    ///
+    /// async fn demo<S>(stream: S) -> Result<Vec<Output>>
+    /// where
+    ///     S: Stream<Item = Input>,
+    /// {
+    ///     stream
+    ///         .then(ffi::do_some_work) // returns Result<Output, &str>
+    ///         .map_err(Error::msg)
+    ///         .try_collect()
+    ///         .await
+    /// }
+    /// # */
+    /// ```
+    pub fn msg<M>(message: M) -> Self
+    where
+        M: fmt::Display + fmt::Debug + Send + Sync + 'static,
+    {
+        Self {
+            inner: anyhow::Error::msg(message),
+            help: None,
+        }
+    }
+
     /// Convert an [`anyhow::Error`] into an error object.
     ///
     /// Due to the generic implementation of [`From`] for [`Error`]: we cannot
