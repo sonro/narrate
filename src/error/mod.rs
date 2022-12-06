@@ -260,6 +260,82 @@ impl Error {
         self.help = Some(HelpMsg::Static(msg));
     }
 
+    /// Add a 'static help message to the Error.
+    ///
+    /// Use this method to add a plain help [`str`]. If you need to format the
+    /// message, or add an owned [`String`], use
+    /// [`add_help_with`](Self::add_help_with) instead.
+    ///
+    /// If the Error already has existing help text, this method will append the
+    /// new message to it (on a new line). This is done deliberately because the
+    /// last help message should be most visible.
+    ///
+    /// You can add help to any `Result` that might contain a
+    /// [`std::error::Error`], by using the [`ErrorWrap`](crate::ErrorWrap)
+    /// trait.
+    ///
+    /// # Examples
+    ///
+    /// Add help to a constructed `Error`.
+    ///
+    /// ```
+    /// # use std::fmt;
+    /// #
+    /// # #[derive(Debug)]
+    /// # struct AppError;
+    /// #
+    /// # impl fmt::Display for AppError {
+    /// #   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    /// #       write!(f, "application error")
+    /// #   }
+    /// # }
+    /// #
+    /// # impl std::error::Error for AppError {}
+    /// #
+    /// use narrate::Error;
+    ///
+    /// let mut error = Error::new(AppError);
+    /// error.add_help("help message");
+    /// ```
+    ///
+    /// Add multiple help messages.
+    ///
+    ///
+    /// ```
+    /// # use std::fmt;
+    /// #
+    /// # #[derive(Debug)]
+    /// # struct AppError;
+    /// #
+    /// # impl fmt::Display for AppError {
+    /// #   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    /// #       write!(f, "application error")
+    /// #   }
+    /// # }
+    /// #
+    /// # impl std::error::Error for AppError {}
+    /// #
+    /// use narrate::{Error, ErrorWrap, Result};
+    ///
+    /// fn main() {
+    ///     let err = outer().unwrap_err();
+    ///     // outer help appended on a new line
+    ///     let expected = "inner help\nouter help";
+    ///     assert_eq!(err.help(), Some(expected));
+    /// }
+    ///
+    /// fn outer() -> Result<()> {
+    ///     // uses the ErrorWrap trait to add help to the Result
+    ///     inner().add_help("outer help")?;
+    ///     Ok(())
+    /// }
+    ///
+    /// fn inner() -> Result<()> {
+    ///     let mut error = Error::new(AppError);
+    ///     error.add_help("inner help");
+    ///     Err(error)
+    /// }
+    /// ```
     pub fn add_help(&mut self, help: &'static str) {
         match self.help {
             Some(HelpMsg::Owned(ref mut existing)) => {
@@ -274,6 +350,45 @@ impl Error {
         }
     }
 
+    /// Add a computed help message to the Error.
+    ///
+    /// Use this method to add a formatted or computed [`String`]. If you are
+    /// adding a `'static str` you should use [`add_help`](Self::add_help)
+    /// instead.
+    ///
+    /// This method takes any closure that produces a value that implements
+    /// [`Display`](fmt::Display), [`Send`], [`Sync`] and `'static`.
+    ///
+    /// If the Error already has existing help text, this method will append the
+    /// new message to it (on a new line). This is done deliberately because the
+    /// last help message should be most visible.
+    ///
+    /// You can add help to any `Result` that might contain a
+    /// [`std::error::Error`], by using the [`ErrorWrap`](crate::ErrorWrap)
+    /// trait.
+    ///
+    /// # Examples
+    ///
+    /// Add formatted help.
+    ///
+    /// ```
+    /// # use std::path::PathBuf;
+    /// use narrate::{CliError, Error};
+    ///
+    /// let path = PathBuf::from("/path/to/file");
+    /// let mut error = Error::new(CliError::CreateFile(path.clone()));
+    /// error.add_help_with(|| format!("helpful message about path: {}", path.display()));
+    /// ```
+    ///
+    /// Add existing value.
+    ///
+    /// ```
+    /// use narrate::error_from;
+    ///
+    /// let mut error = error_from!("error msg");
+    /// let help = String::from("help msg");
+    /// error.add_help_with(|| help);
+    /// ```
     pub fn add_help_with<C, F>(&mut self, f: F)
     where
         C: fmt::Display + Send + Sync + 'static,
