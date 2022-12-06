@@ -10,6 +10,13 @@ fn new() {
 }
 
 #[test]
+fn msg() {
+    let msg = "error msg";
+    let error = Error::msg(msg);
+    assert_error(&ExpectedErr::new(msg), error);
+}
+
+#[test]
 fn from_anyhow() {
     let msg = "anyhow error";
     let any_err = anyhow!(msg);
