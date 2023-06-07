@@ -3,7 +3,7 @@
 [![Crates.io](https://img.shields.io/crates/v/narrate.svg)](https://crates.io/crates/narrate)
 [![msrv
 1.61.1](https://img.shields.io/badge/msrv-1.61.1-dea584.svg?logo=rust)](https://github.com/rust-lang/rust/releases/tag/1.61.1)
-[![tests](https://img.shields.io/github/workflow/status/sonro/narrate/release?label=tests&logo=github)](https://github.com/sonro/narrate/actions/workflows/tests.yml)
+[![tests](https://img.shields.io/github/actions/workflow/status/sonro/varj/release.yml?label=tests&logo=github)](https://github.com/sonro/narrate/actions/workflows/tests.yml)
 [![Documentation](https://img.shields.io/docsrs/narrate?logo=docs.rs)](https://docs.rs/narrate/)
 [![license](https://img.shields.io/crates/l/narrate.svg)](#license)
 
