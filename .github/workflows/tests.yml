@@ -4,15 +4,20 @@ on:
   push:
     branches:
       - 'main'
+      - "ci"
 
   pull_request:
     branches:
       - 'main'
       - 'dev'
 
+env:
+  RUST_BACKTRACE: 1
+
 jobs:
   tests:
     strategy:
+      fail-fast: false
       matrix:
         # minimum supported rust version
         rust: [1.61.0, stable]
@@ -20,85 +25,54 @@ jobs:
           - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
           - { os: macos-latest, target: x86_64-apple-darwin }
           - { os: windows-latest, target: x86_64-pc-windows-msvc }
-        include:
-          - use-cross: false
 
     runs-on: ${{ matrix.on.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
           target: ${{ matrix.on.target }}
-          override: true
 
-      - name: Generate Cargo.lock
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.use-cross }}
-          command: generate-lockfile
+      - name: Generate lockfile
+        if: hashFiles('Cargo.lock') == ''
+        run: cargo generate-lockfile
 
       - name: Cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target 
-          key: ${{ matrix.rust }}-${{ matrix.on.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        uses: Swatinem/rust-cache@v2
 
       - name: Build tests
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.use-cross }}
-          command: test
-          args: --no-run --target ${{ matrix.on.target }}
+        run: cargo test --no-run --locked --all-features
 
       - name: Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.use-cross }}
-          command: test
-          args: --target ${{ matrix.on.target }}
+        run: cargo test --locked --all-features
 
   rustfmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions-rs/toolchain@v1
+      - name: Install stable
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          override: true
-          profile: minimal
           components: rustfmt
 
       - name: Run rustfmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: -- --check
+        run: cargo fmt -- --check
   
   docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install minimal toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          profile: minimal
+      - name: Install nightly
+        uses: dtolnay/rust-toolchain@nightly
 
-      - name: Run rustdoc
+      - name: cargo doc
         env:
-          RUSTDOCFLAGS: -D warnings
-        uses: actions-rs/cargo@v1
-        with:
-          command: doc
-          args: --no-deps --document-private-items
+          RUSTDOCFLAGS: --cfg docsrs -D warnings
+        run: cargo doc --no-deps --all-features --document-private-items
 
   clippy:
     runs-on: ubuntu-latest
@@ -106,31 +80,19 @@ jobs:
       matrix:
         feature: [default, cli-error, error, report]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions-rs/toolchain@v1
+      - name: Install stable
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          override: true
-          profile: minimal
           components: clippy
 
-      - name: Generate Cargo.lock
-        uses: actions-rs/cargo@v1
-        with:
-          command: generate-lockfile
+      - name: Generate lockfile
+        if: hashFiles('Cargo.lock') == ''
+        run: cargo generate-lockfile
 
       - name: Cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target 
-          key: clippy-cargo-${{ hashFiles('**/Cargo.lock') }}
+        uses: Swatinem/rust-cache@v2
 
       - name: Run clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --no-default-features --features ${{ matrix.feature }} -- -D warnings
+        run: cargo clippy --no-default-features --features ${{ matrix.feature }} -- -D warnings
