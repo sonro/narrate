@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Minimum supported rust version now: 1.70.0.
+
 ### Fixed
 
 - The use of `error_from!` or `bail!` macros added a hidden dependency on

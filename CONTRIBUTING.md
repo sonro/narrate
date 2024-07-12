@@ -27,7 +27,7 @@ commands.
 
 ### MSRV
 
-The current minimum supported Rust version of this project is [1.61.1][MSRV] If
+The current minimum supported Rust version of this project is [1.70.0][MSRV] If
 your change requires a newer version we are open to upgrading.
 
 ## Commit messages
