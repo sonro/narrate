@@ -12,18 +12,18 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Install stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Wait for tests to succeed
-        uses: lewagon/wait-on-check-action@v1.0.0
+        uses: lewagon/wait-on-check-action@v1.3.4
         with:
           ref: ${{ github.ref }}
           check-regexp: tests.*
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
-
-      - name: Install stable
-        uses: dtolnay/rust-toolchain@stable
 
       - name: cargo publish
         run: cargo publish --token ${{ secrets.CRATES_TOKEN }}
@@ -32,7 +32,7 @@ jobs:
     needs: publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: taiki-e/create-gh-release-action@v1
         with:

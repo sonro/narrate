@@ -28,16 +28,12 @@ jobs:
 
     runs-on: ${{ matrix.on.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
           target: ${{ matrix.on.target }}
-
-      - name: Generate lockfile
-        if: hashFiles('Cargo.lock') == ''
-        run: cargo generate-lockfile
 
       - name: Cache
         uses: Swatinem/rust-cache@v2
@@ -51,7 +47,7 @@ jobs:
   rustfmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install stable
         uses: dtolnay/rust-toolchain@stable
@@ -64,7 +60,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install nightly
         uses: dtolnay/rust-toolchain@nightly
@@ -80,16 +76,12 @@ jobs:
       matrix:
         feature: [default, cli-error, error, report]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install stable
         uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
-
-      - name: Generate lockfile
-        if: hashFiles('Cargo.lock') == ''
-        run: cargo generate-lockfile
 
       - name: Cache
         uses: Swatinem/rust-cache@v2
