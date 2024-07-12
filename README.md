@@ -139,8 +139,7 @@ wrapper around [anyhow], with optional help messages.
   Modeled on the output from [Cargo].
 
   ```rust
-  use colored::Color;
-  use narrate::report;
+  use narrate::{Color, report};
 
   fn main() {
       report::status("Created", "new project `spacetime`", Color::Green);
