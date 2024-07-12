@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.2] - 2024-07-12
+
 ### Changed
 
 - Minimum supported rust version now: 1.70.0.
@@ -158,7 +160,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - `ExitCode` trait for [sysexits.h](https://man.openbsd.org/sysexits.3) program
   exit codes.
 
-[Unreleased]: https://github.com/sonro/narrate/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/sonro/narrate/compare/v0.4.2...HEAD
+[0.4.1]: https://github.com/sonro/narrate/releases/tag/v0.4.2
 [0.4.1]: https://github.com/sonro/narrate/releases/tag/v0.4.1
 [0.4.0]: https://github.com/sonro/narrate/releases/tag/v0.4.0
 [0.3.0]: https://github.com/sonro/narrate/releases/tag/v0.3.0

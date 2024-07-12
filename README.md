@@ -174,7 +174,7 @@ you can access the [`report`](https://docs.rs/narrate/latest/narrate/report)
 ```toml
 # Cargo.toml
 [dependencies]
-narrate = { version = "0.4.0", default-features = false, features = ["report"] }
+narrate = { version = "0.4.2", default-features = false, features = ["report"] }
 ```
 
 ```rust

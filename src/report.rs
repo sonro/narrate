@@ -21,7 +21,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! narrate = { version = "0.4.0", default-features = false, features = ["report"] }
+//! narrate = { version = "0.4.2", default-features = false, features = ["report"] }
 //! ```
 //!
 //! This will still allow you to report [anyhow errors](anyhow), but not [narrate
