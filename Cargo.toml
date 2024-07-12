@@ -17,9 +17,9 @@ report = ["anyhow", "dep:atty", "dep:colored"]
 anyhow = ["dep:anyhow"]
 
 [dependencies]
-anyhow = { version = "1.0.63", optional = true }
+anyhow = { version = "1.0.86", optional = true }
 atty = { version = "0.2.14", optional = true }
-colored = { version = "2.0.0", optional = true }
+colored = { version = "2.1.0", optional = true }
 exitcode = { version = "1.1.2", optional = true }
 
 [[bin]]
