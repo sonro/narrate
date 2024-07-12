@@ -8,6 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- The use of `error_from!` or `bail!` macros added a hidden dependency on
+  the `anyhow` crate. They now expand to call this library's re-export of
+  `anyhow`.
+
 ## [0.4.1] - 2023-06-08
 
 ### Added

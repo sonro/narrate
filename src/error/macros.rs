@@ -29,13 +29,13 @@
 #[macro_export]
 macro_rules! error_from {
     ($msg:literal $(,)?) => {
-        $crate::Error::from_anyhow(anyhow::anyhow!($msg))
+        $crate::Error::from_anyhow($crate::anyhow::anyhow!($msg))
     };
     ($err:expr $(,)?) => {
-        $crate::Error::from_anyhow(anyhow::anyhow!($err))
+        $crate::Error::from_anyhow($crate::anyhow::anyhow!($err))
     };
     ($fmt:expr, $($arg:tt)*) => {
-        $crate::Error::from_anyhow(anyhow::anyhow!($fmt, $($arg)*))
+        $crate::Error::from_anyhow($crate::anyhow::anyhow!($fmt, $($arg)*))
     };
 }
 

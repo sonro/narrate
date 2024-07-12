@@ -12,9 +12,9 @@ rust-version = "1.61.0"
 [features]
 default = ["cli-error", "error", "report"]
 cli-error = ["dep:exitcode"]
-anyhow = ["dep:anyhow"]
 error = ["anyhow"]
 report = ["anyhow", "dep:atty", "dep:colored"]
+anyhow = ["dep:anyhow"]
 
 [dependencies]
 anyhow = { version = "1.0.63", optional = true }
