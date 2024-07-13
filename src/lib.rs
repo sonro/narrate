@@ -14,7 +14,7 @@
 //! [`Error`](https://docs.rs/anyhow/1/anyhow/struct.Error.html), but with
 //! optional help messages.
 //!
-//! Minimum supported Rust version: **1.61.1**
+//! Minimum supported Rust version: **1.70.0**
 //!
 //! # Features
 //!
